@@ -66,8 +66,8 @@ describe('route static gates on the live app', () => {
 
   it('T37 — no Google/Apple sign-in or token-only login route exists', () => {
     expect(routes.filter((r) => /sign-?in|log-?in|id_token|token-login/i.test(r.path))).toEqual([]);
-    // Provider routes may only ever be account *linking* (SPEC §5.4)
-    expect(routes.filter((r) => /google|apple/i.test(r.path) && !/link|recover/i.test(r.path))).toEqual([]);
+    // Provider routes may only ever be account linking / unlinking / recovery (SPEC 1.0.1 §5.4, §16 T37)
+    expect(routes.filter((r) => /google|apple/i.test(r.path) && !/\/auth\/(identities|recover)/i.test(r.path))).toEqual([]);
   });
 
   it('every state-changing handler declares its idempotency mode', () => {

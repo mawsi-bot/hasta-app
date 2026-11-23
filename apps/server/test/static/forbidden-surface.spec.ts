@@ -1,5 +1,6 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, relative } from 'node:path';
+import { t37Violations } from './t37-gate';
 
 const ROOT = join(__dirname, '..', '..');
 
@@ -26,15 +27,10 @@ describe('T20 — no OTP / SMS anywhere (static)', () => {
   });
 });
 
-describe('T37 — no Google/Apple sign-in (static)', () => {
-  it('no sign-in / token-login route decorator in source', () => {
-    const hits = src
-      .filter(({ text }) => /@(Post|Get|Put|Patch)\(\s*['"`][^'"`]*(sign-?in|log-?in|id_token)[^'"`]*['"`]/i.test(text))
-      .map((x) => x.f);
-    expect(hits).toEqual([]);
-  });
-  it('no Google/Apple sign-in SDK dependency', () => {
-    expect(deps.filter((d) => /passport-google|passport-apple|apple-signin|google-auth-library/i.test(d))).toEqual([]);
+describe('T37 — SPEC 1.0.1: no sign-in route, no weak ID-token verification (static)', () => {
+  it('the gate finds no violation in src/', () => {
+    const files = src.map(({ f, text }) => ({ path: relative(ROOT, f), text }));
+    expect(t37Violations({ deps, files })).toEqual([]);
   });
 });
 
