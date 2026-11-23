@@ -23,7 +23,7 @@ function collectRoutes(ctx: TestCtx): Route[] {
         const p = Reflect.getMetadata(PATH_METADATA, handler);
         if (p === undefined) continue;
         const m = Reflect.getMetadata(METHOD_METADATA, handler) as RequestMethod;
-        routes.push({ method: RequestMethod[m], path: `/v1/${base}/${String(p)}`.replace(/\/+/g, '/').replace(/\/$/, ''), idempotency: reflector.get(IDEMPOTENCY_META, handler as never) });
+        routes.push({ method: RequestMethod[m], path: `/v1/${base}/${String(p)}`.replace(/\/+/g, '/').replace(/\/$/, '').replace(/\\:/g, ':'), idempotency: reflector.get(IDEMPOTENCY_META, handler as never) });
       }
     }
   }
@@ -51,6 +51,8 @@ describe('route static gates on the live app', () => {
         'GET /v1/test/accounts',
         'PATCH /v1/profile',
         'POST /v1/auth/device/register',
+        'POST /v1/auth/identities/google/link:complete',
+        'POST /v1/auth/identities/google/link:start',
         'POST /v1/auth/guest',
         'POST /v1/auth/logout',
         'POST /v1/auth/refresh',

@@ -9,6 +9,7 @@ import { IdempotencyInterceptor } from './common/idempotency/idempotency.interce
 import { RequestIdMiddleware } from './common/http/request-id.middleware';
 import { SessionGuard } from './common/auth/session.guard';
 import { AuthModule } from './modules/auth/auth.module';
+import { IdentityModule } from './modules/identity/identity.module';
 import { UserModule } from './modules/user/user.module';
 import { TestModeModule } from './modules/test-mode/test-mode.module';
 import { HealthController } from './modules/health/health.controller';
@@ -18,7 +19,7 @@ export class AppModule implements NestModule {
   static forRoot(env: Env, secrets: Secrets): DynamicModule {
     return {
       module: AppModule,
-      imports: [ConfigModule.forRoot(env, secrets), InfraModule, AuthModule, UserModule, TestModeModule],
+      imports: [ConfigModule.forRoot(env, secrets), InfraModule, AuthModule, IdentityModule, UserModule, TestModeModule],
       controllers: [HealthController],
       providers: [
         { provide: APP_FILTER, useClass: ErrorEnvelopeFilter },
