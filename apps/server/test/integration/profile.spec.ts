@@ -1,4 +1,5 @@
 import { uuidv7 } from '../../src/common/ids/uuidv7';
+import { RemoteConfigService } from '../../src/config/remote-config';
 import { bootApp, guest, registerDevice, resetDb, type TestCtx } from '../helpers';
 
 let ctx: TestCtx;
@@ -84,5 +85,15 @@ describe('profile basics (GET/PATCH /v1/profile)', () => {
     expect(res.status).toBe(400);
     expect(res.body.error.details).toEqual({ bio: 'zawgyi_detected' });
     expect(await ctx.prisma.profile.count({ where: { bio: 'ေက်ာင္း' } })).toBe(0);
+  });
+
+  it('Zawgyi rejection sits behind zawgyi_reject_enabled (SPEC 1.0.2 interim rule)', async () => {
+    const rc = ctx.app.get(RemoteConfigService);
+    rc.applyOverrides({ zawgyi_reject_enabled: false });
+    try {
+      expect((await patch({ bio: 'ေက်ာင္း', hlc: hlc(5000) })).status).toBe(200);
+    } finally {
+      rc.reset();
+    }
   });
 });
