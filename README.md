@@ -5,7 +5,7 @@ Myanmar-first social feed, chat and dating app. Flutter client and NestJS API. T
 ## Layout
 | Path | What |
 |---|---|
-| `apps/server` | NestJS 10 + Prisma 5 API (Postgres 16, Redis 7) |
+| `apps/server` | NestJS 10 + Prisma 5 API (PostgreSQL 16 + PostGIS 3.4, Redis 7) |
 | `apps/mobile` | Flutter 3.24 app (Riverpod, Drift, Dio) |
 | `design/hasta-ds-1.0.2.json` | Design tokens; `tools/scripts/generate-tokens.mjs` generates `apps/mobile/lib/core/design/tokens.dart` |
 | `infra/terraform` | AWS baseline (VPC, ECS Fargate, RDS, ElastiCache, S3, Secrets Manager) |

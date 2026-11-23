@@ -49,7 +49,7 @@ jobs:
         working-directory: apps/server
     services:
       postgres:
-        image: postgres:16.16@sha256:3950ad7c3148ca2175ef1b6c36c9efbf78957ae8fbe8b3a5d7c35af50500382f  # T48: pinned; PostGIS lands in Sprint 8
+        image: postgis/postgis:16-3.4@sha256:44126d872ac91993766c341e369c539e8196614321765d36a6f1bab0419a5fa5  # T48: PostgreSQL major 16 (SPEC 1.0.2); PostGIS required by §13
         env:
           POSTGRES_USER: hasta
           POSTGRES_PASSWORD: hasta
