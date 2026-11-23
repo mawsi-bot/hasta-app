@@ -52,6 +52,9 @@ class ApiClient {
   Future<Map<String, dynamic>?> patch(String path, {Object? body, bool auth = true, String? idempotencyKey}) =>
       _send('PATCH', path, body: body, auth: auth, idempotencyKey: idempotencyKey);
 
+  Future<Map<String, dynamic>?> delete(String path, {bool auth = true, String? idempotencyKey}) =>
+      _send('DELETE', path, auth: auth, idempotencyKey: idempotencyKey);
+
   Future<Map<String, dynamic>?> _send(
     String method,
     String path, {
