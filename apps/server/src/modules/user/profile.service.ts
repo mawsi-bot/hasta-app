@@ -4,6 +4,7 @@ import { ENV } from '../../config/config.module';
 import { TEST_MODE_ENVS, type Env } from '../../config/env';
 import { PrismaService } from '../../infra/prisma.service';
 import { looksLikeZawgyi } from '../../common/text/zawgyi';
+import { RemoteConfigService } from '../../config/remote-config';
 import { ApiError } from '../../common/errors/api-error';
 import { mergeFields, parseHlc, type FieldClocks } from './hlc-merge';
 import { maskEmail } from './mask-email';
@@ -17,6 +18,7 @@ export class ProfileService {
   constructor(
     @Inject(ENV) private readonly env: Env,
     private readonly prisma: PrismaService,
+    private readonly rc: RemoteConfigService,
   ) {}
 
   /** GET /v1/me — own view. Never includes dating fields beyond the two boolean flags (SPEC §1 rule 1). */
@@ -65,7 +67,8 @@ export class ProfileService {
       throw ApiError.validation({ hlc: 'invalid' });
     }
     if (dto.birth_date !== undefined) assertPlausibleBirthDate(dto.birth_date);
-    for (const f of ['display_name', 'bio'] as const) {
+    // SPEC 1.0.2 interim: reject (store nothing) until convert-on-write lands in Sprint 3, then remove.
+    for (const f of this.rc.get('zawgyi_reject_enabled') ? (['display_name', 'bio'] as const) : []) {
       const v = dto[f];
       if (typeof v === 'string' && looksLikeZawgyi(v)) throw ApiError.validation({ [f]: 'zawgyi_detected' });
     }

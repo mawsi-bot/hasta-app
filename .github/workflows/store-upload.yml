@@ -1,0 +1,20 @@
+name: store-upload
+# SPEC §0.1 Tag rule / T49: a 0.x tag must never reach a Play track or TestFlight.
+# The tag guard is the FIRST run step of every job here (asserted by tools/ci/gates.test.mjs).
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  store-upload:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: T49 tag guard (fails closed unless ^v1\.)
+        run: node tools/ci/gates.mjs t49 "$GITHUB_REF_NAME"
+      - name: Upload
+        run: |
+          echo "No Fastlane lane is configured yet; nothing is uploaded."
+          exit 1

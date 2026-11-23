@@ -1,0 +1,3 @@
+# T45 allowlist (SPEC 1.0.2 §16): explicit docs files that exist to perform the rename. One path per line.
+# Never apps/, infra/, design/ or tools/; no globs. Asserted by tools/ci/gates.test.mjs.
+docs/Hasta_v1_Master_PRD.md
