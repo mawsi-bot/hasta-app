@@ -1,0 +1,7 @@
+{
+  "name": "hasta-app",
+  "version": "1.0.0",
+  "description": "Hasta v1 Plugin",
+  "author": "mawsi-bot",
+  "main": "index.js"
+}
