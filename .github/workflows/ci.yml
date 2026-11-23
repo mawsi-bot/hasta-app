@@ -14,7 +14,9 @@ jobs:
       - run: sudo apt-get update && sudo apt-get install -y ripgrep
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - name: Static gates (T20, T45, T48, hex)
+      - name: Gate self-tests (T45 allowlist + plant, T48, T49, T37 mobile boundary)
+        run: node --test tools/ci/
+      - name: Static gates (T20, T45, T48, T37 mobile, hex)
         run: bash tools/ci/static-gates.sh
       - name: T47 OpenAPI lint + breaking-change diff vs previous tag
         run: |
@@ -27,6 +29,18 @@ jobs:
       - name: Terraform fmt + validate
         working-directory: infra/terraform
         run: terraform fmt -check -recursive && terraform init -backend=false -input=false && terraform validate
+
+  db-image:
+    # T48 + SPEC §13: the compose DB must host the shipped schema (geometry(Point,4326) + GiST).
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose database accepts CREATE EXTENSION postgis
+        run: |
+          touch apps/server/.env
+          docker compose up -d --wait postgres
+          docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U hasta -d hasta \
+            -c 'CREATE EXTENSION IF NOT EXISTS postgis' -c 'SELECT postgis_full_version()'
 
   server:
     runs-on: ubuntu-24.04
