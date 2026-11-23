@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="my" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hasta · UI Design System v1.1 — Simplified Reference</title>
+<meta name="description" content="Hasta v1.0.0 UI Architect Design — simplified modern semantic tags, refreshed colour system and interactive transaction flows.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Myanmar:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ Hasta DS v1.1 tokens (simplified) ============ */
+:root{
+  --indigo-50:#EEF1FF; --indigo-300:#B9C2FF; --indigo-400:#7C8BFF;
+  --indigo-500:#4C5EF6; --indigo-600:#3D4EE0; --indigo-700:#2C39B4;
+  --coral-50:#FFEFF4; --coral-300:#FF8FB0; --coral-500:#FF4D7E; --coral-600:#D62A5C; --coral-700:#B81E4B;
+  --emerald-50:#E8FBF4; --emerald-300:#5FE3B4; --emerald-500:#12C08B; --emerald-600:#0A7F5C; --emerald-700:#08744F;
+  --amber-50:#FFF6E0; --amber-300:#FFC94D; --amber-500:#FFB020; --amber-600:#8A5A00;
+  --ink:#0B1020; --slate:#5A6478; --slate-2:#8A93A6;
+  --grad-trust:linear-gradient(135deg,#4C5EF6 0%,#7A4BF0 100%);
+  --grad-date:linear-gradient(135deg,#FF4D7E 0%,#FF8A5B 100%);
+  --grad-chat:linear-gradient(135deg,#2E7CF6 0%,#12C08B 100%);
+  --grad-market:linear-gradient(135deg,#FFB020 0%,#FF7A45 100%);
+  --grad-ink:linear-gradient(135deg,#0B1020 0%,#2C39B4 100%);
+  --r-xs:6px; --r-sm:8px; --r-md:12px; --r-card:16px; --r-sheet:20px; --r-pill:999px;
+  --e1:0 1px 2px rgba(11,16,32,.06); --e2:0 4px 12px rgba(11,16,32,.08);
+  --e3:0 8px 24px rgba(11,16,32,.12); --e4:0 16px 40px rgba(11,16,32,.16);
+  --s4:4px; --s8:8px; --s12:12px; --s16:16px; --s20:20px; --s24:24px; --s32:32px; --s40:40px; --s48:48px;
+  --ff-my:"Noto Sans Myanmar","Padauk",system-ui,sans-serif;
+  --ff-en:"Inter",system-ui,sans-serif;
+  --dur-fast:150ms; --dur-base:200ms; --dur-slow:320ms; --ease:cubic-bezier(.2,0,0,1);
+}
+:root,[data-theme="light"]{
+  --bg:#F7F8FC; --surface:#FFFFFF; --raised:#FFFFFF; --sunken:#EEF1F6;
+  --text:#0B1020; --text-2:#5A6478; --text-3:#8A93A6;
+  --brand-text:#3D4EE0; --dating-text:#B81E4B; --community-text:#08744F; --market-text:#8A5A00;
+  --danger:#F04452; --warning:#F5A524; --success:#17C382;
+  --border:#E2E7EF; --border-strong:#CBD3DF;
+  --code:#0E1424; --code-text:#C9D3E6;
+  color-scheme:light;
+}
+[data-theme="dark"]{
+  --bg:#0A0E18; --surface:#121A2B; --raised:#1A2438; --sunken:#0D1524;
+  --text:#E8EDF7; --text-2:#A6B2C7; --text-3:#7A86A0;
+  --brand-text:#7C8BFF; --dating-text:#FF8FB0; --community-text:#5FE3B4; --market-text:#FFC94D;
+  --danger:#FF6B70; --warning:#FFC94D; --success:#3EE59F;
+  --border:#243141; --border-strong:#33445A;
+  --code:#0D1524; --code-text:#C9D3E6;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--ff-my);font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+ background:radial-gradient(60rem 32rem at 88% -8%,rgba(76,94,246,.16),transparent 60%),
+            radial-gradient(48rem 28rem at 4% 4%,rgba(255,77,126,.12),transparent 62%),
+            radial-gradient(40rem 26rem at 40% 100%,rgba(18,192,139,.10),transparent 60%)}
+a{color:var(--brand-text)}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:var(--s16)}
+code,pre,.mono{font-family:var(--ff-en)}
+.skip{position:absolute;left:-9999px;top:0;background:var(--surface);padding:8px 14px;border-radius:var(--r-sm);z-index:99}
+.skip:focus{left:12px;top:12px;outline:2px solid var(--indigo-500);outline-offset:2px}
+:focus-visible{outline:2px solid var(--indigo-500);outline-offset:2px;border-radius:var(--r-xs)}
+
+/* masthead */
+.masthead{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--surface) 82%,transparent);
+ backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.masthead .wrap{display:flex;align-items:center;gap:var(--s12);min-height:64px;flex-wrap:wrap}
+.logo{width:38px;height:38px;border-radius:11px;background:var(--grad-trust);display:grid;place-items:center;
+ color:#fff;font-family:var(--ff-en);font-weight:700;font-size:19px;box-shadow:var(--e2);flex:none}
+.wordmark{font-family:var(--ff-en);font-weight:700;font-size:20px;letter-spacing:-.02em;line-height:1.2}
+.wordmark span{display:block;font-family:var(--ff-my);font-weight:500;font-size:11.5px;color:var(--text-3);letter-spacing:0}
+.chips{display:flex;gap:6px;margin-inline-start:auto;flex-wrap:wrap;align-items:center}
+.chip{font-family:var(--ff-en);font-size:11px;font-weight:600;padding:5px 10px;border-radius:var(--r-pill);
+ background:var(--sunken);color:var(--text-2);border:1px solid var(--border);white-space:nowrap}
+.chip.b{background:var(--indigo-50);color:var(--brand-text);border-color:transparent}
+.tgl{font:600 12px/1 var(--ff-en);padding:9px 14px;border-radius:var(--r-pill);border:1px solid var(--border-strong);
+ background:var(--surface);color:var(--text);cursor:pointer;transition:transform var(--dur-fast) var(--ease)}
+.tgl:active{transform:scale(.97)}
+
+/* toc */
+nav.toc{position:sticky;top:64px;z-index:25;background:color-mix(in srgb,var(--bg) 88%,transparent);
+ backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+nav.toc ul{display:flex;gap:4px;overflow-x:auto;margin:0;padding:10px 0;list-style:none;scrollbar-width:none}
+nav.toc ul::-webkit-scrollbar{display:none}
+nav.toc a{display:block;padding:8px 13px;border-radius:var(--r-pill);text-decoration:none;color:var(--text-2);
+ font-size:13.5px;font-weight:500;white-space:nowrap;border:1px solid transparent}
+nav.toc a:hover{background:var(--surface);color:var(--text);border-color:var(--border)}
+
+/* sections */
+main{padding-block:var(--s32) var(--s48)}
+section{margin-bottom:var(--s48);scroll-margin-top:120px}
+.shead{display:flex;align-items:flex-end;gap:var(--s12);flex-wrap:wrap;margin-bottom:var(--s20)}
+.shead .num{font:700 12px/1 var(--ff-en);letter-spacing:.14em;color:var(--brand-text);background:var(--indigo-50);
+ padding:8px 11px;border-radius:var(--r-sm)}
+[data-theme="dark"] .shead .num{background:#16243D}
+h1{font-size:clamp(26px,4.2vw,38px);line-height:1.35;font-weight:700;margin:0 0 10px;letter-spacing:-.01em}
+h2{font-size:24px;line-height:1.5;font-weight:700;margin:0}
+h3{font-size:17px;line-height:1.65;font-weight:600;margin:0 0 8px}
+h4{font-size:14px;line-height:1.6;font-weight:600;margin:0 0 6px;color:var(--text-2)}
+p{margin:0 0 12px;color:var(--text-2);max-width:74ch}
+.lede{font-size:16.5px;line-height:1.8}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);padding:var(--s20);box-shadow:var(--e1)}
+.grid{display:grid;gap:var(--s16)}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.hero{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:clamp(22px,4vw,40px);
+ box-shadow:var(--e3);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:auto -18% -60% auto;width:52%;aspect-ratio:1;border-radius:50%;
+ background:var(--grad-date);opacity:.10;filter:blur(10px)}
+.badgerow{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.badge{font:600 11.5px/1 var(--ff-en);padding:7px 11px;border-radius:var(--r-pill);background:var(--sunken);color:var(--text-2)}
+.badge.hot{background:var(--grad-date);color:#fff}
+.badge.new{background:var(--grad-trust);color:#fff}
+
+/* tag table */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font:600 11px/1.4 var(--ff-en);letter-spacing:.08em;text-transform:uppercase;color:var(--text-3)}
+tbody tr:hover{background:color-mix(in srgb,var(--indigo-50) 55%,transparent)}
+[data-theme="dark"] tbody tr:hover{background:#16243D44}
+td code{background:var(--sunken);padding:2px 6px;border-radius:5px;font-size:12.5px;color:var(--text);white-space:nowrap}
+.ok{color:var(--community-text);font-weight:600}
+.no{color:var(--danger);font-weight:600}
+pre{background:var(--code);color:var(--code-text);padding:16px;border-radius:var(--r-md);overflow:auto;font-size:12.5px;line-height:1.7;margin:0}
+pre .t{color:#8FB4FF}.pre .a{color:#FFC94D}.k{color:#5FE3B4}.c{color:#7A86A0;font-style:italic}.st{color:#FF8FB0}
+.tagrules{display:flex;flex-direction:column;gap:10px;margin:0;padding:0;list-style:none}
+.tagrules li{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text-2)}
+.tagrules b{color:var(--text)}
+.dot{flex:none;width:20px;height:20px;border-radius:50%;background:var(--emerald-50);color:var(--community-text);
+ display:grid;place-items:center;font-size:11px;font-weight:700;font-family:var(--ff-en);margin-top:3px}
+
+/* colour */
+.sw{display:flex;flex-direction:column;gap:8px}
+.swatch{height:64px;border-radius:var(--r-md);border:1px solid var(--border);cursor:pointer;position:relative;
+ transition:transform var(--dur-fast) var(--ease),box-shadow var(--dur-fast) var(--ease)}
+.swatch:hover{transform:translateY(-2px);box-shadow:var(--e2)}
+.swatch span{position:absolute;left:8px;bottom:6px;font:600 10.5px/1 var(--ff-en);color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.sw meta,.sw .hex{font:500 11.5px/1.4 var(--ff-en);color:var(--text-2)}
+.combo{border-radius:var(--r-card);overflow:hidden;border:1px solid var(--border);background:var(--surface);box-shadow:var(--e1)}
+.combo .band{height:96px;display:flex;align-items:flex-end;padding:12px;color:#fff;font-weight:600;font-size:14px;text-shadow:0 1px 6px rgba(0,0,0,.35)}
+.combo .body{padding:14px 16px}
+.combo .body p{margin:0;font-size:13px}
+.ramp{display:flex;height:34px;border-radius:var(--r-sm);overflow:hidden;border:1px solid var(--border)}
+.ramp i{flex:1}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{font:600 11px/1 var(--ff-en);padding:7px 11px;border-radius:var(--r-pill)}
+.pill.i{background:var(--indigo-50);color:var(--brand-text)}
+.pill.d{background:var(--coral-50);color:var(--dating-text)}
+.pill.c{background:var(--emerald-50);color:var(--community-text)}
+.pill.m{background:var(--amber-50);color:var(--market-text)}
+[data-theme="dark"] .pill.i{background:#16243D}[data-theme="dark"] .pill.d{background:#2A1620}
+[data-theme="dark"] .pill.c{background:#0E2A21}[data-theme="dark"] .pill.m{background:#2A2113}
+.ratio{font:700 12px/1 var(--ff-en);padding:4px 8px;border-radius:var(--r-xs);background:var(--emerald-50);color:var(--community-text)}
+.ratio.warn{background:var(--amber-50);color:var(--market-text)}
+[data-theme="dark"] .ratio{background:#0E2A21}[data-theme="dark"] .ratio.warn{background:#2A2113}
+.note{border-inline-start:3px solid var(--amber-500);background:var(--amber-50);color:var(--market-text);
+ padding:12px 14px;border-radius:var(--r-sm);font-size:13.5px}
+[data-theme="dark"] .note{background:#2A2113}
+
+/* flows */
+.flowbar{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:var(--s16);scrollbar-width:thin}
+.flowbtn{flex:none;font:600 13px/1 var(--ff-my);padding:11px 15px;border-radius:var(--r-pill);cursor:pointer;
+ border:1px solid var(--border);background:var(--surface);color:var(--text-2);transition:all var(--dur-fast) var(--ease)}
+.flowbtn[aria-selected="true"]{background:var(--grad-trust);color:#fff;border-color:transparent;box-shadow:var(--e2)}
+.flowbtn[data-accent="dating"][aria-selected="true"]{background:var(--grad-date)}
+.flowbtn[data-accent="chat"][aria-selected="true"]{background:var(--grad-chat)}
+.flowbtn[data-accent="market"][aria-selected="true"]{background:var(--grad-market)}
+.flowbtn[data-accent="ink"][aria-selected="true"]{background:var(--grad-ink)}
+.flowgrid{display:grid;gap:var(--s20);grid-template-columns:minmax(0,1fr) 320px;align-items:start}
+@media(max-width:900px){.flowgrid{grid-template-columns:1fr}}
+.steps{list-style:none;margin:0;padding:0;position:relative}
+.steps::before{content:"";position:absolute;left:15px;top:14px;bottom:14px;width:2px;background:var(--border)}
+.step{position:relative;padding:0 0 14px 44px}
+.step .b{position:absolute;left:0;top:2px;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+ background:var(--surface);border:2px solid var(--border);font:700 12px/1 var(--ff-en);color:var(--text-3);cursor:pointer;z-index:1}
+.step[aria-current="true"] .b{background:var(--grad-trust);border-color:transparent;color:#fff;box-shadow:var(--e2)}
+.step .t{font-weight:600;font-size:15px;cursor:pointer}
+.step .d{font-size:13px;color:var(--text-2);margin-top:2px}
+.step .api{display:inline-block;margin-top:6px;font:600 11px/1 var(--ff-en);padding:5px 8px;border-radius:5px;
+ background:var(--sunken);color:var(--text-2)}
+.step .edge{margin-top:6px;font-size:12.5px;color:var(--market-text);background:var(--amber-50);padding:8px 10px;border-radius:var(--r-sm)}
+[data-theme="dark"] .step .edge{background:#2A2113}
+.step[hidden]{display:none}
+/* phone */
+.stage{position:sticky;top:130px;display:grid;gap:12px;justify-items:center}
+@media(max-width:900px){.stage{position:static}}
+.phone{width:300px;aspect-ratio:9/19.2;background:var(--surface);border:9px solid var(--ink);border-radius:38px;
+ box-shadow:var(--e4);overflow:hidden;display:flex;flex-direction:column;position:relative}
+[data-theme="dark"] .phone{border-color:#000}
+.ph-top{padding:10px 14px 6px;font:600 10px/1 var(--ff-en);color:var(--text-3);display:flex;justify-content:space-between}
+.ph-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);font-weight:600;font-size:13.5px}
+.ph-body{flex:1;padding:14px;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.ph-h1{font-size:19px;font-weight:700;line-height:1.5;margin:6px 0 2px}
+.ph-p{font-size:12px;line-height:1.7;color:var(--text-2);margin:0}
+.ph-btn{margin-top:auto;padding:12px;border-radius:var(--r-md);text-align:center;font-weight:600;font-size:13.5px;color:#fff;background:var(--grad-trust)}
+.ph-btn.ghost{background:transparent;border:1px solid var(--border-strong);color:var(--text)}
+.ph-btn.off{background:var(--sunken);color:var(--text-3)}
+.ph-nav{display:flex;justify-content:space-around;padding:8px 4px;border-top:1px solid var(--border);font-size:9.5px;color:var(--text-3)}
+.ph-nav b{color:var(--brand-text)}
+.ph-card{border:1px solid var(--border);border-radius:var(--r-md);padding:10px;font-size:12px;display:flex;gap:10px;align-items:center;background:var(--surface)}
+.av{width:34px;height:34px;border-radius:50%;background:var(--grad-trust);flex:none;display:grid;place-items:center;color:#fff;font:600 12px/1 var(--ff-en)}
+.av.dating{background:var(--grad-date)}
+.ph-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid var(--border);font-size:12.5px}
+.bubble{max-width:82%;padding:8px 11px;border-radius:16px;font-size:12.5px;line-height:1.6}
+.bubble.out{align-self:flex-end;background:var(--indigo-500);color:#fff;border-bottom-right-radius:6px}
+.bubble.in{align-self:flex-start;background:var(--sunken);color:var(--text);border-bottom-left-radius:6px}
+.bubble.blur{filter:blur(4px)}
+.st{font:600 9.5px/1 var(--ff-en);color:var(--text-3)}
+.banner{background:var(--amber-50);color:var(--market-text);font-size:11.5px;padding:8px 10px;border-radius:var(--r-sm)}
+[data-theme="dark"] .banner{background:#2A2113}
+.dating-mode{background:var(--coral-50);border-radius:var(--r-md);padding:10px}
+[data-theme="dark"] .dating-mode{background:#2A1620}
+.matchcard{aspect-ratio:4/5;border-radius:var(--r-md);background:var(--grad-date);position:relative;overflow:hidden}
+.matchcard .ov{position:absolute;inset:auto 0 0 0;padding:10px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.matchcard .ov b{font-size:14px}
+.matchcard .ov i{display:block;font-style:normal;font-size:10.5px;opacity:.9}
+.actions{display:flex;justify-content:center;gap:12px;margin-top:10px}
+.act{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--surface);border:1px solid var(--border);font-size:14px}
+.act.p{background:var(--grad-date);color:#fff;border:0}
+.stamp{position:absolute;top:14px;right:12px;transform:rotate(12deg);border:2px solid #fff;color:#fff;
+ font:700 12px/1 var(--ff-en);padding:6px 9px;border-radius:var(--r-sm);background:rgba(18,192,139,.85)}
+.qr{width:104px;height:104px;margin:6px auto;border-radius:var(--r-sm);
+ background:repeating-conic-gradient(var(--ink) 0 25%,#fff 0 50%) 0 0/22px 22px;border:4px solid #fff;box-shadow:var(--e1)}
+.pricetag{font:700 22px/1 var(--ff-en);margin:2px 0 6px}
+.tick{display:flex;gap:8px;font-size:12px;align-items:flex-start;color:var(--text-2)}
+.tick i{font-style:normal;color:var(--community-text);font-weight:700}
+.tick.no i{color:var(--danger)}
+.ph-tabs{display:flex;gap:6px;font-size:10.5px;color:var(--text-3);overflow:hidden}
+.ph-tabs b{padding:5px 9px;border-radius:var(--r-pill);background:var(--sunken);white-space:nowrap}
+.ph-tabs b.on{background:var(--grad-date);color:#fff}
+.badge-dot{background:var(--danger);color:#fff;font:700 9px/1 var(--ff-en);padding:3px 5px;border-radius:var(--r-pill)}
+.stagecap{font-size:12.5px;color:var(--text-2);text-align:center;max-width:300px}
+
+/* components */
+.demo{background:var(--sunken);border-radius:var(--r-md);padding:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;cursor:pointer;font-family:var(--ff-my);font-weight:600;border-radius:var(--r-md);padding:11px 16px;font-size:13.5px;
+ transition:transform var(--dur-fast) var(--ease)}
+.btn:active{transform:scale(.98)}
+.btn.primary{background:var(--grad-trust);color:#fff}
+.btn.date{background:var(--grad-date);color:#fff}
+.btn.secondary{background:var(--surface);color:var(--brand-text);border:1px solid var(--border-strong)}
+.btn.ghost{background:transparent;color:var(--text-2);border:1px solid var(--border)}
+.btn.danger{background:var(--danger);color:#fff}
+.btn.sm{padding:8px 13px;font-size:12.5px}
+.btn.loading{position:relative;color:transparent}
+.btn.loading::after{content:"";position:absolute;inset:0;margin:auto;width:16px;height:16px;border-radius:50%;
+ border:2px solid rgba(255,255,255,.45);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.field{display:flex;flex-direction:column;gap:6px;width:100%;max-width:340px}
+.field input,.field textarea{font-family:var(--ff-my);font-size:13.5px;padding:12px;border-radius:var(--r-sm);
+ border:1px solid var(--border-strong);background:var(--surface);color:var(--text);line-height:1.7}
+.field input:focus{border-color:var(--indigo-500);box-shadow:0 0 0 2px var(--indigo-50)}
+.field.err input{border-color:var(--danger)}
+.field small{font-size:12px;color:var(--danger)}
+.avatar-demo{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.av-lg{width:52px;height:52px;border-radius:50%;background:var(--grad-trust);position:relative;display:grid;place-items:center;color:#fff;font:700 17px/1 var(--ff-en)}
+.av-lg.ring::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:2px solid var(--coral-500)}
+.av-lg .pres{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:var(--emerald-500);border:2px solid var(--surface)}
+.av-lg .ver{position:absolute;right:-3px;bottom:-3px;width:17px;height:17px;border-radius:50%;background:var(--indigo-500);
+ color:#fff;font:700 10px/17px var(--ff-en);text-align:center;border:2px solid var(--surface)}
+.sheet{background:var(--surface);border-radius:var(--r-sheet);padding:18px;box-shadow:var(--e3);max-width:330px}
+.sheet .row{padding:11px 0;border-bottom:1px solid var(--border);font-size:13.5px}
+.sheet .row:last-child{border:0;color:var(--danger);font-weight:600}
+.skel{height:12px;border-radius:6px;background:linear-gradient(90deg,var(--sunken),color-mix(in srgb,var(--sunken) 55%,var(--surface)),var(--sunken));
+ background-size:200% 100%;animation:sh 1.4s var(--ease) infinite}
+@keyframes sh{to{background-position:-200% 0}}
+.toast{background:var(--ink);color:#fff;padding:11px 15px;border-radius:var(--r-md);font-size:13px;display:flex;gap:10px;align-items:center}
+.radar{width:100%;max-width:260px;aspect-ratio:1;border-radius:50%;margin:auto;position:relative;
+ background:radial-gradient(circle,var(--emerald-50) 0 32%,var(--indigo-50) 32% 62%,var(--coral-50) 62% 100%);border:1px solid var(--border)}
+.radar i{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--grad-date);filter:blur(1.5px);opacity:.85}
+.radar .me{position:absolute;left:50%;top:50%;width:18px;height:18px;transform:translate(-50%,-50%);border-radius:50%;
+ background:var(--indigo-500);border:3px solid var(--surface);filter:none}
+/* type */
+.t-row{display:flex;align-items:baseline;gap:14px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.t-row .k{font:500 11px/1 var(--ff-en);color:var(--text-3);width:96px;flex:none}
+.spaces{display:flex;gap:6px;align-items:flex-end;margin-top:8px}
+.spaces i{background:var(--indigo-50);border-radius:4px;display:block}
+[data-theme="dark"] .spaces i{background:#16243D}
+.mot{display:flex;gap:10px;flex-wrap:wrap}
+.mot div{flex:1;min-width:120px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:12px;font-size:12px;color:var(--text-2)}
+.mot b{display:block;font-family:var(--ff-en);font-size:12px;color:var(--brand-text)}
+.mot span{display:block;height:6px;border-radius:3px;background:var(--grad-trust);margin-top:8px;transform-origin:left;
+ transition:transform var(--dur-slow) var(--ease)}
+.mot div:hover span{transform:scaleX(.35)}
+footer{border-top:1px solid var(--border);background:var(--surface);padding:24px 0;margin-top:20px}
+footer .wrap{display:flex;gap:12px;flex-wrap:wrap;align-items:center;font-size:13px;color:var(--text-2)}
+#toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);background:var(--ink);color:#fff;
+ padding:11px 16px;border-radius:var(--r-md);font-size:13px;box-shadow:var(--e3);transition:transform var(--dur-base) var(--ease);z-index:60}
+#toast.on{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">မာတိကာသို့ ကျော်ရန်</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <div class="logo" aria-hidden="true">H</div>
+    <h1 class="wordmark" style="font-size:20px;margin:0">Hasta<span>UI Architect Reference · v1.1 simplified</span></h1>
+    <div class="chips">
+      <span class="chip b">App 1.0.0 · build 1</span>
+      <span class="chip">DS 1.1</span>
+      <span class="chip">Flutter + NestJS</span>
+      <button class="tgl" id="themeBtn" aria-pressed="false" type="button">🌙 Dark</button>
+    </div>
+  </div>
+</header>
+
+<nav class="toc" aria-label="မာတိကာ">
+  <div class="wrap">
+    <ul>
+      <li><a href="#tags">၁။ Modern Tags</a></li>
+      <li><a href="#colour">၂။ Colour System</a></li>
+      <li><a href="#flows">၃။ Transaction Flow</a></li>
+      <li><a href="#components">၄။ Components</a></li>
+      <li><a href="#system">၅။ Type · Space · Motion</a></li>
+      <li><a href="#copy">၆။ Microcopy</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrap" id="main">
+
+  <!-- HERO -->
+  <section aria-labelledby="hl">
+    <div class="hero">
+      <h1 id="hl">ရိုးရှင်းပြီး ခေတ်မီသော UI Architecture</h1>
+      <p class="lede">ဟောင်းသော <code>&lt;div&gt;</code>-အများအပြား ပုံစံမှ <b>semantic HTML5 tags</b> သို့ ပြောင်းပြီး၊ အရောင်စနစ်ကို <b>Indigo–Coral–Emerald</b> သုံးဆယ် တွဲဖက်မှုဖြင့် ပြန်ရေးထားသည်။ Flow တိုင်းကို ဖုန်း mock-up ဖြင့် တစ်ဆင့်ချင်း နှိပ်ကြည့်နိုင်သည်။</p>
+      <div class="badgerow">
+        <span class="badge new">Modern tags</span>
+        <span class="badge hot">Refreshed palette</span>
+        <span class="badge">6 transaction flows</span>
+        <span class="badge">WCAG AA · မြန်မာစာ 4.5:1</span>
+        <span class="badge">Light · Dark · AMOLED</span>
+        <span class="badge">Reference only — mock data</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1. TAGS -->
+  <section id="tags" aria-labelledby="t1">
+    <div class="shead"><span class="num">01</span><h2 id="t1">ခေတ်မီသော Tags များ</h2></div>
+    <p>UI Architect အတွက် အဓိက စည်းမျဉ်း — screen တစ်ခုလျှင် landmark တစ်ခု၊ class-soup ဖျောက်ပစ်၊ native tag ကို ပထမဦးစားပေး။ Flutter တွင် semantic tag ၏ အနက်ကို <b>Semantics widget</b> ဖြင့် တွဲသုံး၍ TalkBack/VoiceOver အတူတူ ရအောင် လုပ်သည်။</p>
+
+    <div class="grid g2" style="align-items:start">
+      <article class="card">
+        <h3>Tag အဟောင်း → အသစ် mapping</h3>
+        <table>
+          <thead><tr><th>ဟောင်း</th><th>ခေတ်မီ</th><th>ဘဝတွင်</th></tr></thead>
+          <tbody>
+            <tr><td><code>div.container</code></td><td><code>&lt;main&gt;</code></td><td class="ok">screen root</td></tr>
+            <tr><td><code>div.nav</code></td><td><code>&lt;nav&gt;</code></td><td class="ok">bottom tab · TOC</td></tr>
+            <tr><td><code>div.header</code></td><td><code>&lt;header&gt;</code></td><td class="ok">TopAppBar</td></tr>
+            <tr><td><code>div.post</code></td><td><code>&lt;article&gt;</code></td><td class="ok">PostCard · MatchCard</td></tr>
+            <tr><td><code>div.section</code></td><td><code>&lt;section&gt;</code></td><td class="ok">settings block</td></tr>
+            <tr><td><code>div.sidebar</code></td><td><code>&lt;aside&gt;</code></td><td class="ok">safety banner</td></tr>
+            <tr><td><code>div.img</code></td><td><code>&lt;figure&gt; + &lt;figcaption&gt;</code></td><td class="ok">media + caption</td></tr>
+            <tr><td><code>div.modal</code></td><td><code>&lt;dialog&gt;</code> + <code>showModal()</code></td><td class="ok">confirm sheet</td></tr>
+            <tr><td><code>div.accordion</code></td><td><code>&lt;details&gt;/&lt;summary&gt;</code></td><td class="ok">FAQ · privacy</td></tr>
+            <tr><td><code>div.list</code></td><td><code>&lt;ul&gt;/&lt;li&gt;</code>, <code>&lt;ol&gt;</code></td><td class="ok">chat · feed</td></tr>
+            <tr><td><code>div.btn</code></td><td><code>&lt;button&gt; <i>type=button</i></code></td><td class="ok">all actions</td></tr>
+            <tr><td><code>input type=text</code></td><td><code>&lt;input inputmode autocomplete&gt;</code></td><td class="ok">bio · username</td></tr>
+            <tr><td><code>div.datepicker</code></td><td><code>&lt;input type="date"&gt;</code></td><td class="ok">18+ age gate</td></tr>
+            <tr><td><code>div.img tag</code></td><td><code>&lt;picture&gt;</code> WebP/AVIF</td><td class="ok">photos</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <div style="display:grid;gap:16px">
+        <article class="card">
+          <h3>Modern attributes (မဖြစ်မနေ)</h3>
+          <ul class="tagrules">
+            <li><span class="dot">✓</span><div><b>popover / popoverhint</b> — reaction bar နှင့် tooltip ကို JS ရိုးရိုးမဟုတ်ဘတ် native popover ဖြင့်</div></li>
+            <li><span class="dot">✓</span><div><b>inert</b> — dialog ပွင့်စဉ် backlog ကို focus မရစေရန်</div></li>
+            <li><span class="dot">✓</span><div><b>aria-live="polite"</b> — message status (<i>pending → sent → read</i>) ပြောင်းလဲမှု ကြားသိစေရန်</div></li>
+            <li><span class="dot">✓</span><div><b>enterkeyhint="send"</b> — chat input bar တွင်</div></li>
+            <li><span class="dot">✓</span><div><b>loading="lazy" decoding="async"</b> — feed media အားလုံးတွင်</div></li>
+            <li><span class="dot">✓</span><div><b>contenteditable="false"</b> — forwarded content ကို edit မလုပ်ရန်</div></li>
+            <li><span class="dot">✓</span><div><b>role="status" role="img" aria-label</b> — icon-only button တိုင်း</div></li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3>Component markup နမူနာ</h3>
+<pre><span class="c">&lt;!-- MessageBubble : semantic + state --&gt;</span>
+<span class="t">&lt;li</span> <span class="k">class</span>=<span class="st">"msg out"</span> <span class="k">aria-label</span>=<span class="st">"ပို့ပြီး"</span><span class="t">&gt;</span>
+  <span class="t">&lt;p&gt;</span>မင်္ဂလာပါ<span class="t">&lt;/p&gt;</span>
+  <span class="t">&lt;span</span> <span class="k">class</span>=<span class="st">"st"</span> <span class="k">role</span>=<span class="st">"status"</span> <span class="k">aria-live</span>=<span class="st">"polite"</span><span class="t">&gt;</span>✓✓<span class="t">&lt;/span&gt;</span>
+<span class="t">&lt;/li&gt;</span>
+
+<span class="c">&lt;!-- MatchCard : article + figure --&gt;</span>
+<span class="t">&lt;article</span> <span class="k">class</span>=<span class="st">"match"</span> <span class="k">aria-roledescription</span>=<span class="st">"card"</span><span class="t">&gt;</span>
+  <span class="t">&lt;figure&gt;</span>
+    <span class="t">&lt;picture&gt;</span>
+      <span class="t">&lt;source</span> <span class="k">type</span>=<span class="st">"image/avif"</span> <span class="k">srcset</span>=<span class="st">"a.avif"</span><span class="t">&gt;</span>
+      <span class="t">&lt;img</span> <span class="k">src</span>=<span class="st">"a.webp"</span> <span class="k">alt</span>=<span class="st">""</span> <span class="k">loading</span>=<span class="st">"lazy"</span> <span class="k">decoding</span>=<span class="st">"async"</span><span class="t">&gt;</span>
+    <span class="t">&lt;/picture&gt;</span>
+    <span class="t">&lt;figcaption&gt;</span>နွယ် · 26 · 1 ကီလိုမီတာအတွင်း<span class="t">&lt;/figcaption&gt;</span>
+  <span class="t">&lt;/figure&gt;</span>
+  <span class="t">&lt;menu&gt;</span><span class="t">&lt;button</span> <span class="k">popovertarget</span>=<span class="st">"safety"</span><span class="t">&gt;</span>⋮<span class="t">&lt;/button&gt;</span><span class="t">&lt;/menu&gt;</span>
+<span class="t">&lt;/article&gt;</span></pre>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. COLOUR -->
+  <section id="colour" aria-labelledby="t2">
+    <div class="shead"><span class="num">02</span><h2 id="t2">ဆွဲဆောင်မှုရှိသော Colour ပေါင်းစပ်မှု</h2></div>
+    <p>အရောင်နှစ်ခုတည်းပေါ် မမူတည်ဘဲ <b>domain တစ်ခု = gradient တစ်ခု</b> သတ်မှတ်ထားသည်။ Accent များကို <b>fill/gradient</b> အဖြစ်သာသုံးပြီး စာသားအတွက် <b>text variant</b> သီးသန့်ထားသည် (WCAG AA)။ Swatch နှိပ်လျှင် hex copy ရသည်။</p>
+
+    <div class="grid g4" role="list" aria-label="Palette swatches" id="swatches"></div>
+
+    <h3 style="margin-top:28px">Domain combo ၅ ခု (recommended pairings)</h3>
+    <div class="grid g3">
+      <article class="combo"><div class="band" style="background:var(--grad-trust)">Home · Feed — Trust</div>
+        <div class="body"><p>Indigo → Violet. Header tint၊ selected tab၊ primary CTA။ Surface ကို သန့်ရှင်းထားပါ။</p>
+        <div class="pill-row"><span class="pill i">#4C5EF6</span><span class="pill i">#7A4BF0</span><span class="pill">surface #FFFFFF</span></div></div></article>
+      <article class="combo"><div class="band" style="background:var(--grad-date)">Dating — Warm</div>
+        <div class="body"><p>Coral → Peach. Dating mode ပါဝင်သည့် နေရာတိုင်း surface အနည်းငယ် ဖြူဖျော့ (<code>--coral-50</code>)။</p>
+        <div class="pill-row"><span class="pill d">#FF4D7E</span><span class="pill d">#FF8A5B</span><span class="pill d">surface #FFEFF4</span></div></div></article>
+      <article class="combo"><div class="band" style="background:var(--grad-chat)">Chat — Alive</div>
+        <div class="body"><p>Blue → Emerald. outgoing bubble = indigo၊ delivered = emerald ✓✓၊ typing = emerald dot။</p>
+        <div class="pill-row"><span class="pill c">#12C08B</span><span class="pill i">#2E7CF6</span><span class="pill">sunken #EEF1F6</span></div></div></article>
+      <article class="combo"><div class="band" style="background:linear-gradient(135deg,#0A7F5C,#12C08B)">Community</div>
+        <div class="body"><p>Group/Page badge၊ member count၊ success state။ Online presence dot တွင်လည်း သုံးသည်။</p>
+        <div class="pill-row"><span class="pill c">#0A7F5C</span><span class="pill c">text #08744F</span></div></div></article>
+      <article class="combo"><div class="band" style="background:var(--grad-market)">Market · Premium</div>
+        <div class="body"><p>Amber → Orange. Premium plan card၊ seller badge၊ warning banner (စာသား = <code>#8A5A00</code> သာ)။</p>
+        <div class="pill-row"><span class="pill m">#FFB020</span><span class="pill m">text #8A5A00</span></div></div></article>
+      <article class="combo"><div class="band" style="background:var(--grad-ink)">Neutral ink</div>
+        <div class="body"><p>Text primary၊ phone frame၊ QR panel၊ footer။ Dark theme တွင် ink ကို surface အဖြစ် မသုံးဘဲ <code>#121A2B</code> အဖြစ် သီးသန့် dark surfaces သုံးသည်။</p>
+        <div class="pill-row"><span class="pill">#0B1020</span><span class="pill">#121A2B</span><span class="pill">#0A0E18 AMOLED</span></div></div></article>
+    </div>
+
+    <div class="grid g2" style="margin-top:28px;align-items:start">
+      <article class="card">
+        <h3>Semantic token (v1.1)</h3>
+        <table>
+          <thead><tr><th>Token</th><th>Light</th><th>Dark</th><th>အသုံး</th></tr></thead>
+          <tbody>
+            <tr><td><code>bg.canvas</code></td><td>#F7F8FC</td><td>#0A0E18</td><td>app background</td></tr>
+            <tr><td><code>bg.surface</code></td><td>#FFFFFF</td><td>#121A2B</td><td>card, list</td></tr>
+            <tr><td><code>bg.sunken</code></td><td>#EEF1F6</td><td>#0D1524</td><td>input, chat bg</td></tr>
+            <tr><td><code>bg.datingSubtle</code></td><td>#FFEFF4</td><td>#2A1620</td><td>dating mode</td></tr>
+            <tr><td><code>bg.brandSubtle</code></td><td>#EEF1FF</td><td>#16243D</td><td>selected row</td></tr>
+            <tr><td><code>text.primary</code></td><td>#0B1020</td><td>#E8EDF7</td><td>body, title</td></tr>
+            <tr><td><code>text.secondary</code></td><td>#5A6478</td><td>#A6B2C7</td><td>metadata</td></tr>
+            <tr><td><code>brand.text</code></td><td>#3D4EE0</td><td>#7C8BFF</td><td>links, labels</td></tr>
+            <tr><td><code>dating.text</code></td><td>#B81E4B</td><td>#FF8FB0</td><td>match label</td></tr>
+            <tr><td><code>community.text</code></td><td>#08744F</td><td>#5FE3B4</td><td>success</td></tr>
+            <tr><td><code>market.text</code></td><td>#8A5A00</td><td>#FFC94D</td><td>warning</td></tr>
+            <tr><td><code>state.read</code></td><td>#4C5EF6</td><td>#7C8BFF</td><td>✓✓</td></tr>
+            <tr><td><code>state.waiting</code></td><td>#F5A524</td><td>#FFC94D</td><td>offline queue</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card">
+        <h3>Contrast — တကယ့်တွက်ချက်ရလဒ်</h3>
+        <table>
+          <thead><tr><th>Pair</th><th>Ratio</th><th>ရလဒ်</th></tr></thead>
+          <tbody>
+            <tr><td>#0B1020 on #F7F8FC</td><td><span class="ratio">17.84</span></td><td class="ok">pass</td></tr>
+            <tr><td>#3D4EE0 on #FFFFFF</td><td><span class="ratio">6.24</span></td><td class="ok">pass</td></tr>
+            <tr><td>#4C5EF6 on #FFFFFF</td><td><span class="ratio">4.95</span></td><td class="ok">pass (body ≥4.5)</td></tr>
+            <tr><td>#B81E4B on #FFFFFF</td><td><span class="ratio">6.32</span></td><td class="ok">pass</td></tr>
+            <tr><td>#08744F on #FFFFFF</td><td><span class="ratio">5.80</span></td><td class="ok">pass</td></tr>
+            <tr><td>#8A5A00 on #FFF6E0</td><td><span class="ratio">5.51</span></td><td class="ok">pass</td></tr>
+            <tr><td>#5A6478 on #FFFFFF</td><td><span class="ratio">5.95</span></td><td class="ok">pass</td></tr>
+            <tr><td>#F7F8FC on #121A2B</td><td><span class="ratio">16.38</span></td><td class="ok">pass</td></tr>
+            <tr><td>#FF4D7E on #FFFFFF <i>(fill only)</i></td><td><span class="ratio warn">3.17</span></td><td class="no">text မသုံးရ — icon/large သာ</td></tr>
+            <tr><td>#FFB020 on #FFFFFF <i>(fill only)</i></td><td><span class="ratio warn">1.83</span></td><td class="no">text မသုံးရ — fill သာ</td></tr>
+            <tr><td>#12C08B on #FFFFFF <i>(fill only)</i></td><td><span class="ratio warn">2.35</span></td><td class="no">text မသုံးရ — fill သာ</td></tr>
+          </tbody>
+        </table>
+        <p class="note" style="margin-top:14px">Satin rule — အရောင်တစ်ခုတည်းဖြင့် အဓိပ္ပာယ်မပေးရ။ Status အားလုံး <b>icon + text</b> ပါရမည် (colour-blind safety)။ မြန်မာစာ contrast 4.5:1 မလျှော့ရ။</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3. FLOWS -->
+  <section id="flows" aria-labelledby="t3">
+    <div class="shead"><span class="num">03</span><h2 id="t3">Transaction Flow — နှိပ်ကြည့်နိုင်သည်</h2></div>
+    <p>Flow တစ်ခုစီရှိ နာမည်းအားလုံး PRD v1.0.0 အတိုင်းဖြစ်သည် (Gmail sign-in မဟုတ် — guest ဝင်ပြီးမှ Gmail <b>link</b>)။ Flow နှိပ် → step နှိပ် → ဖုန်း mock နှင့် API call ပြောင်းလဲမည်။</p>
+
+    <div class="flowbar" role="tablist" aria-label="Transaction flows" id="flowbar"></div>
+
+    <div class="flowgrid">
+      <div>
+        <ol class="steps" id="steps"></ol>
+      </div>
+      <div class="stage">
+        <div class="phone" id="phone" aria-live="polite"></div>
+        <p class="stagecap" id="stagecap"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. COMPONENTS -->
+  <section id="components" aria-labelledby="t4">
+    <div class="shead"><span class="num">04</span><h2 id="t4">Components — အသစ်အရောင်ဖြင့်</h2></div>
+    <div class="grid g2">
+      <article class="card">
+        <h3>Button (5 variants · 3 sizes)</h3>
+        <div class="demo">
+          <button class="btn primary" type="button">Primary</button>
+          <button class="btn date" type="button">Dating</button>
+          <button class="btn secondary" type="button">Secondary</button>
+          <button class="btn ghost" type="button">Ghost</button>
+          <button class="btn danger" type="button">ဖျက်သည်</button>
+          <button class="btn primary loading" type="button">loading</button>
+          <button class="btn primary sm" type="button">SM 36</button>
+        </div>
+        <h4 style="margin-top:16px">Input · error · counter</h4>
+        <div class="demo" style="align-items:flex-start">
+          <label class="field"><span>bio</span><input value="မင်္ဂလာပါ၊ ကျွန်မ မိုးပါ။"><small>စာလုံး ၃၀၀ ထဲမှ ၂၈</small></label>
+          <label class="field err"><span>username</span><input value="@mo">@</label>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Avatar · presence · dating ring · verified</h3>
+        <div class="demo">
+          <div class="avatar-demo">
+            <div class="av-lg">M<span class="pres"></span></div>
+            <div class="av-lg ring">W<span class="ver">✓</span></div>
+            <div class="av-lg" style="background:var(--grad-market)">S<span class="ver" style="background:var(--amber-600)">✓</span></div>
+            <div class="av-lg" style="background:var(--sunken);color:var(--text-3)">?</div>
+          </div>
+        </div>
+        <h4 style="margin-top:16px">Chips · badges</h4>
+        <div class="demo">
+          <span class="pill i">ခရီးသွား</span><span class="pill i">ကော်ဖီ</span>
+          <span class="pill d">တွဲဖက်</span><span class="pill c">အွန်လိုင်း</span>
+          <span class="pill m">အရောင်းစာ</span>
+          <span class="badge-dot">၉+</span><span class="badge-dot">၉၉+</span>
+        </div>
+        <h4 style="margin-top:16px">Skeleton (shimmer off on low-end)</h4>
+        <div class="demo" style="flex-direction:column;align-items:stretch;gap:8px">
+          <div class="skel" style="width:45%"></div><div class="skel" style="width:88%"></div><div class="skel" style="width:70%"></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>MessageBubble — lifecycle states</h3>
+        <div class="demo" style="flex-direction:column;align-items:stretch">
+          <div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">🕐 pending</span></div>
+          <div class="bubble out">မိတ်ဆက်ခွင့်ပြုပါ <span class="st" style="color:#DDE3FF">✓ sent</span></div>
+          <div class="bubble out">ရယ်စရာကောင်းတယ် <span class="st" style="color:#DDE3FF">✓✓ read</span></div>
+          <div class="bubble in">မင်္ဂလာပါ 😊</div>
+          <div class="bubble in blur">🔒 media — ဖွင့်ကြည့်ရန် နှိပ်ပါ</div>
+          <div class="banner" role="status">ငွေတောင်းခံခြင်း သံသယ — သတိထားပါ</div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Offline banner · Toast · ActionSheet</h3>
+        <div class="demo" style="flex-direction:column;align-items:stretch">
+          <div class="banner" role="status">အင်တာနက်မရှိပါ။ ပို့ထားသော စာများကို ချိတ်ဆက်သည့်အချိန် ပို့ပေးပါမည်။</div>
+          <div class="toast" role="status">✓ ပြောင်းပြီးပါပြီ — <button class="btn sm ghost" style="color:#fff;border-color:#3a4560" type="button">Y</button></div>
+          <div class="sheet" style="max-width:none">
+            <div class="row">Pin</div><div class="row">Mute</div><div class="row">Archive</div><div class="row">ဖျက်သည်</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Radar (banded distance only)</h3>
+        <div class="radar" role="img" aria-label="အနီးအနား radar">
+          <span class="me"></span>
+          <i style="left:30%;top:34%"></i><i style="left:64%;top:42%"></i>
+          <i style="left:52%;top:20%"></i><i style="left:40%;top:70%"></i>
+        </div>
+        <p style="margin-top:10px;font-size:12.5px">တိကျသော coordinate မပေးရ — <code>1 ကီလိုမီတာအတွင်း</code> / <code>~3 ကီလိုမီတာ</code> အုပ်စုဖွင့်သာ။ 200–500 m random offset + geohash snap။</p>
+      </article>
+
+      <article class="card">
+        <h3>Dating action bar (thumb zone)</h3>
+        <div class="demo" style="justify-content:center">
+          <span class="act" title="Pass">✕</span>
+          <span class="act" title="Undo" style="font-size:12px">↺</span>
+          <span class="act" title="Super Like">★</span>
+          <span class="act p" title="Like">♥</span>
+        </div>
+        <div class="pill-row" style="justify-content:center">
+          <span class="pill d">Pass 60</span><span class="pill">Undo 44</span><span class="pill i">Super 48</span><span class="pill d">Like 60</span>
+        </div>
+        <p style="margin-top:12px;font-size:12.5px">Motion: <code>motion.slow 320ms</code> · card depth 3 (.94/.88, y+8/+16) · swipe stamp 12°</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 5. SYSTEM -->
+  <section id="system" aria-labelledby="t5">
+    <div class="shead"><span class="num">05</span><h2 id="t5">Type · Space · Motion</h2></div>
+    <div class="grid g2" style="align-items:start">
+      <article class="card">
+        <h3>Type scale (Noto Sans Myanmar)</h3>
+        <div class="t-row"><span class="k">display</span><span style="font-size:28px;font-weight:700;line-height:1.43">It's a Match!</span></div>
+        <div class="t-row"><span class="k">h1 · 24/36</span><span style="font-size:24px;font-weight:700;line-height:1.5">ပရိုဖိုင်</span></div>
+        <div class="t-row"><span class="k">h2 · 20/32</span><span style="font-size:20px;font-weight:600;line-height:1.6">အကောင့်</span></div>
+        <div class="t-row"><span class="k">subtitle</span><span style="font-size:17px;font-weight:600;line-height:1.65">နွယ် · 26 နှစ်</span></div>
+        <div class="t-row"><span class="k">body · 15/26</span><span>မင်္ဂလာပါ၊ ဒီနေ့ ရာသီဥတု ကောင်းတယ်နော်။</span></div>
+        <div class="t-row"><span class="k">bodySm</span><span style="font-size:14px">မှတ်ချက် ဒုတိယ အလွှာ</span></div>
+        <div class="t-row"><span class="k">caption</span><span style="font-size:13px;color:var(--text-2)">၁၉:၄၅ · ၅ မိနစ်က</span></div>
+        <div class="t-row"><span class="k">micro</span><span class="pill i">၉+</span></div>
+        <p style="margin-top:14px;font-size:13px">Myanmar rules — line-height <b>≥1.65×</b> · syllable wrap · <code>min-height</code> only · <code>ellipsis</code> only · bold ≤600 · input padding +2px</p>
+      </article>
+      <article class="card">
+        <h3>Spacing scale (4pt)</h3>
+        <div class="spaces">
+          <i style="width:4px;height:4px"></i><i style="width:8px;height:10px"></i><i style="width:12px;height:16px"></i>
+          <i style="width:16px;height:22px"></i><i style="width:20px;height:28px"></i><i style="width:24px;height:34px"></i>
+          <i style="width:32px;height:42px"></i><i style="width:40px;height:52px"></i><i style="width:48px;height:62px"></i>
+        </div>
+        <p style="margin-top:10px;font-size:12.5px">screen padding 16 · card 12/16 · list row 12 · section gap 24 · sticky bar 12+safe</p>
+        <h4 style="margin-top:18px">Motion tokens (hover ကြည့်ပါ)</h4>
+        <div class="mot">
+          <div><b>instant 100</b>press<span></span></div>
+          <div><b>fast 150</b>chip<span></span></div>
+          <div><b>base 200</b>page/sheet<span></span></div>
+          <div><b>slow 320</b>match reveal<span></span></div>
+        </div>
+        <h4 style="margin-top:18px">Performance budget</h4>
+        <div class="pill-row">
+          <span class="pill">cold start &lt; 2.5s</span><span class="pill">feed ≥55fps</span>
+          <span class="pill">images ≤800KB</span><span class="pill">animated ≤3</span><span class="pill">APK &lt;45MB</span>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 6. COPY -->
+  <section id="copy" aria-labelledby="t6">
+    <div class="shead"><span class="num">06</span><h2 id="t6">Microcopy (normative)</h2></div>
+    <div class="grid g2">
+      <article class="card">
+        <table>
+          <thead><tr><th>အခြေအနေ</th><th>စာသား</th></tr></thead>
+          <tbody>
+            <tr><td>Welcome CTA</td><td><b>စတင်အသုံးပြုရန်</b></td></tr>
+            <tr><td>Guest explainer</td><td>အီးမေးလ်၊ ဖုန်းနံပါတ် မလိုပါ။ ဤဖုန်းဖြင့် ချက်ချင်း စတင်နိုင်သည်။</td></tr>
+            <tr><td>Guest risk</td><td>ဖုန်းပျောက်ပါက ဤအကောင့်ကို ပြန်ရနိုင်မည် မဟုတ်ပါ။ Gmail ချိတ်ဆက်ထားရန် အကြံပြုသည်။</td></tr>
+            <tr><td>Connect Gmail</td><td>Gmail ချိတ်ဆက်ရန် · ချိတ်ဆက်ပြီး — h***@gmail.com</td></tr>
+            <tr><td>Premium (guest)</td><td>Premium ဝယ်ယူရန် Gmail ချိတ်ဆက်ထားရပါမည်။</td></tr>
+            <tr><td>Offline</td><td>အင်တာနက်မရှိပါ။ ပို့ထားသော စာများကို ချိတ်ဆက်သည့်အချိန် ပို့ပေးပါမည်။</td></tr>
+            <tr><td>Opener limit</td><td>ဤချတ်ဖြင့် နောက်ထပ် မက်ဆေ့ခ်ျ ၁ ခုသာ ပို့နိုင်သေးသည်။ ဖြေကြားမှု ရရှိပါက ကန့်သတ်ချက် ပြေလျော့မည်။</td></tr>
+            <tr><td>Under 18</td><td>Dating ကို အသက် ၁၈ နှစ်ပြည့်ပြီးမှ အသုံးပြုနိုင်ပါသည်။</td></tr>
+            <tr><td>Unmatch</td><td>ဒီတွဲဖက်ကို ဖျက်မလား? — နှစ်ဖက်စလုံးအတွက် ချက်ချင်း ပိတ်သွားမည်။</td></tr>
+            <tr><td>Generic error</td><td>မအောင်မြင်ပါ။ ခဏနောက် ပြန်ကြိုးစားပါ။ (E-500)</td></tr>
+          </tbody>
+        </table>
+      </article>
+      <div class="grid g2" style="gap:16px">
+        <article class="card">
+          <h4>Glossary (mandatory)</h4>
+          <p style="font-size:13.5px">Post = ပို့စ် · Comment = မှတ်ချက် · Share = မျှဝေ · Follow = လိုက်ကြည့် · Match = တွဲဖက် · Nearby = အနီးအနား · Offline transfer = အင်တာနက်မလိုဘဲ ပို့</p>
+          <h4>မသုံးရ</h4>
+          <p style="font-size:13.5px;color:var(--danger)">အပ်တင် · ကွန့်မန့် · ရှဲ · ဖော်လိုး · မက်ချ်</p>
+        </article>
+        <article class="card">
+          <h4>Error formula</h4>
+          <p style="font-size:13.5px"><code>[ဘာဖြစ်လဲ] + [ဘာလုပ်ရမလဲ] + [(ဖျက်) error code]</code></p>
+          <h4>Destructive rule</h4>
+          <p style="font-size:13.5px">ခလုတ်တံတွင် <b>ကြိယာ</b> သာ — "OK" မသုံးရ။ Dialog တွင် ညာဘက်၊ ActionSheet တွင် အောက်ဆုံး + အနီ။</p>
+          <h4>Theme</h4>
+          <p style="font-size:13.5px">Light · Dark · AMOLED (<code>#000000</code>) · High contrast 7:1 · Data saver</p>
+        </article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="logo" style="width:28px;height:28px;border-radius:8px;font-size:14px" aria-hidden="true">H</div>
+    <span><b>Hasta</b> · SPEC 1.0.0 / DS 1.1 reference · app <code>1.0.0</code> build <code>1</code> · mock data သာ — ဒီဇိုင်း လမ်းညွှန် အဖြစ်သာ သုံးရန်</span>
+    <span class="chip" style="margin-inline-start:auto">v1.1 · 2026-11-23</span>
+  </div>
+</footer>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- theme ---------- */
+const tb=document.getElementById('themeBtn');
+const setTheme=t=>{document.documentElement.dataset.theme=t;tb.textContent=t==='dark'?'☀️ Light':'🌙 Dark';tb.setAttribute('aria-pressed',t==='dark')};
+tb.onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+if(matchMedia('(prefers-color-scheme: dark)').matches)setTheme('dark');
+
+/* ---------- toast + swatches ---------- */
+const toast=(m=>{const el=document.getElementById('toast');let t;return x=>{el.textContent=x;el.classList.add('on');clearTimeout(t);t=setTimeout(()=>el.classList.remove('on'),1600)}})();
+const P={
+ 'Indigo · brand':[['#EEF1FF','indigo-50'],['#B9C2FF','indigo-300'],['#7C8BFF','indigo-400'],['#4C5EF6','indigo-500'],['#3D4EE0','indigo-600'],['#2C39B4','indigo-700']],
+ 'Coral · dating':[['#FFEFF4','coral-50'],['#FF8FB0','coral-300'],['#FF4D7E','coral-500'],['#D62A5C','coral-600'],['#B81E4B','coral-700']],
+ 'Emerald · community':[['#E8FBF4','emerald-50'],['#5FE3B4','emerald-300'],['#12C08B','emerald-500'],['#0A7F5C','emerald-600'],['#08744F','emerald-700']],
+ 'Amber · market':[['#FFF6E0','amber-50'],['#FFC94D','amber-300'],['#FFB020','amber-500'],['#FF7A45','orange-500'],['#8A5A00','amber-600']],
+ 'Ink · neutral':[['#0B1020','ink'],['#5A6478','slate'],['#8A93A6','slate-2'],['#CBD3DF','border-strong'],['#EEF1F6','sunken'],['#F7F8FC','canvas']]
+};
+const sw=document.getElementById('swatches');
+Object.entries(P).forEach(([n,list])=>{
+  const d=document.createElement('div');d.className='sw';d.setAttribute('role','listitem');
+  d.innerHTML=`<h4>${n}</h4><div class="ramp">${list.map(c=>`<i style="background:${c[0]}"></i>`).join('')}</div>`+
+    list.map(c=>`<button class="swatch" style="background:${c[0]}" data-hex="${c[0]}" title="${c[1]}"><span>${c[1]} ${c[0]}</span></button>`).join('');
+  sw.appendChild(d);
+});
+sw.addEventListener('click',e=>{const b=e.target.closest('.swatch');if(b){navigator.clipboard?.writeText(b.dataset.hex);toast(b.dataset.hex+' copied')}});
+
+/* ---------- phone mock builders ---------- */
+const top=(l,r='9:41')=>`<div class="ph-top"><span>${l}</span><span>${r} · ▮▮▮</span></div>`;
+const nav=(a='ပင်မ')=>{const it=['ပင်မ','ရှာဖွေ','ချတ်','အသိပေး','ပရိုဖိုင်'];return `<nav class="ph-nav">${it.map(i=>`<span${i===a?' style="color:var(--brand-text);font-weight:600"':''}>${i}</span>`).join('')}</nav>`};
+const M={
+ welcome:()=>`<div class="ph-body">${top('Hasta')}<div style="height:34px"></div>
+   <div class="logo" style="width:56px;height:56px;border-radius:16px;font-size:26px">H</div>
+   <p class="ph-h1">လူမှုကွန်ရက်၊ ချတ်နှင့် Dating — တစ်နေရာတည်း</p>
+   <p class="ph-p">အီးမေးလ်၊ ဖုန်းနံပါတ် မလိုပါ။ ဤဖုန်းဖြင့် ချက်ချင်း စတင်နိုင်သည်။</p>
+   <p class="ph-p" style="color:var(--market-text)">⚠️ ဖုန်းပျောက်ပါက ပြန်ရနိုင်မည် မဟုတ်ပါ။ Gmail ချိတ်ဆက်ထားရန် အကြံပြုသည်။</p>
+   <div class="ph-btn">စတင်အသုံးပြုရန်</div>
+   <p class="ph-p" style="text-align:center;text-decoration:underline">ရည်ရွယ်ချက် & သတ်မှတ်ချက်</p></div>`,
+ guest:()=>`<div class="ph-body">${top('Hasta')}<div class="ph-card"><div class="av">M</div><div><b>မိုး (guest)</b><div class="ph-p">အကောင့် အသစ် ဖွင့်ပြီး</div></div></div>
+   <div class="tick"><i>✓</i><span>device binding ချိတ်ပြီး — raw id မသိမ်းပါ</span></div>
+   <div class="tick"><i>✓</i><span>access 15m + refresh rotation</span></div>
+   <div class="tick no"><i>✕</i><span>Premium ဝယ်၍ မရသေး — Gmail လိုအပ်</span></div>
+   <div class="ph-card" style="border-color:var(--danger)"><div class="av" style="background:var(--danger)">⏳</div><div><b>cooldown variant</b><div class="ph-p">device cooldown → 429 (၂၃ ရက် ကျန်)</div></div></div>
+   <div class="ph-btn ghost">ပင်မသို့ သွားရန်</div></div>`,
+ settings:(linked)=>`<div class="ph-body">${top('အကောင့်')}<nav class="ph-bar">◀ အကောင့်</nav>
+   <div class="ph-card"><div class="av">M</div><div><b>မိုး</b><div class="ph-p">@mo · guest${linked?' · linked':''}</div></div></div>
+   <div class="ph-row">ပရိုဖိုင် ပြင်ဆင်ရန်<span style="margin-left:auto">›</span></div>
+   <div class="ph-row" style="${linked?'':'background:var(--coral-50);border-radius:8px'}">❤ Dating<span style="margin-left:auto">${linked?'›':'🔒 ဖွင့်ရန်'}</span></div>
+   <div class="ph-row" style="background:var(--amber-50);border-radius:8px"><b>ချိတ်ဆက်ထားသော အကောင့်များ</b><span style="margin-left:auto">${linked?'✓':'Gmail'}</span></div>
+   <div class="ph-row">ဖုန်း/စက် ပြောင်းရန်<span style="margin-left:auto">›</span></div>
+   <div class="ph-row" style="color:var(--danger)">အကောင့် ဖျက်ရန်</div>
+   ${nav('ပရိုဖိုင်')}</div>`,
+ gmail:(state)=>{const s={sheet:`<p class="ph-h1">Gmail ချိတ်ဆက်မလား?</p><div class="tick"><i>✓</i><span>ဖုန်းပြောင်းလျှင် အကောင့် ပြန်ရ</span></div><div class="tick"><i>✓</i><span>Premium ဝယ်ယူနိုင်</span></div><div class="tick"><i>✓</i><span>Restore Purchases သုံးနိုင်</span></div><div class="ph-btn">Gmail ဖြင့် ဆက်လက်ရန်</div><div class="ph-btn ghost">နောက်ထပ် နောက်ရန်</div>`,
+   consent:`<p class="ph-h1">Choose an account</p><div class="ph-card"><div class="av" style="background:var(--grad-market)">G</div><div><b>mo***@gmail.com</b><div class="ph-p">Google မှ အတည်ပြုရန်</div></div></div><p class="ph-p">Hasta သည် openid · email · profile ကိုသာ တောင်းသည်။ email_verified=false ဖြစ်လျှင် 422</p><div class="ph-btn">ခွင့်ပြုသည်</div>`,
+   done:`<div class="tick"><i>✓</i><span>identity linked — is_guest = false</span></div><div class="ph-card"><div class="av" style="background:var(--grad-market)">G</div><div><b>ချိတ်ဆက်ပြီး</b><div class="ph-p">h***@gmail.com</div></div></div><div class="tick"><i>✓</i><span>Premium ဝယ်ယူခြင်း ပွင့်ပြီး</span></div><div class="tick no"><i>✕</i><span>duplicate link → 409 identity_in_use</span></div><div class="ph-btn ghost">Settings သို့ ပြန်ရန်</div>`,
+   offline:`<div class="banner">အင်တာနက်မရှိပါ — ဤလုပ်ဆောင်ချက် အွန်လိုင်းတွင်သာ</div><p class="ph-h1">Gmail ချိတ်ဆက်ရန်</p><div class="ph-btn off">အွန်လိုင်းတွင်သာ ရနိုင်သည်</div>`}[state];
+   return `<div class="ph-body">${top('အကောင့်')}<nav class="ph-bar">◀ Gmail ချိတ်ဆက်ရန်</nav>${s}</div>`},
+ chat:(st)=>{const s={pending:`<div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">🕐 pending</span></div>`,
+   sent:`<div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">✓ sent</span></div>`,
+   delivered:`<div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">✓✓ delivered</span></div>`,
+   read:`<div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">✓✓ read · 19:45</span></div>`,
+   failed:`<div class="bubble out" style="background:var(--sunken);color:var(--text)">မင်္ဂလာပါ ⚠ <span class="st" style="color:var(--danger)">ပို့မရပါ · ပြန်ပို့ရန်</span></div>`}[st];
+   return `<div class="ph-body">${top('ချတ်')}<nav class="ph-bar">◀ နွယ် <span class="pill d" style="font-size:9px;margin-left:auto">dating</span></nav>
+   ${st==='failed'?'<div class="banner">ပို့မရပါ။ ထပ်ကြိုးစားရန်</div>':''}
+   <div style="display:flex;flex-direction:column;gap:8px">${s}<div class="bubble in">မင်္ဂလာပါ 😊</div></div>
+   <div class="ph-btn ghost" style="margin-top:auto;text-align:left;color:var(--text-3)">မက်ဆေ့ခ်ျ ရိုက်ရန်… ⏎ send</div></div>`},
+ chatlist:(off)=>`<div class="ph-body" style="gap:6px">${top('ချတ်')}${off?'<div class="banner">အင်တာနက်မရှိပါ။ ပို့ထားသော စာများကို ချိတ်ဆက်သည့်အချိန် ပို့ပေးပါမည်။</div>':''}
+   <nav class="ph-tabs"><b>အားလုံး</b><b>ကိုယ်ရေး</b><b>အုပ်စု</b><b class="on">Dating</b><b>မဖတ်ရသေး</b></nav>
+   <div class="ph-row"><div class="av dating">W</div><div style="flex:1"><b>နွယ်</b> <span class="st">✓✓</span><div class="ph-p">မင်္ဂလာပါ 😊</div></div><div><span class="st">၁၉:၄၅</span> <span class="badge-dot">၂</span></div></div>
+   <div class="ph-row"><div class="av">K</div><div style="flex:1"><b>ကိုအောင်</b><div class="ph-p">🕐 ပို့ဆောင်နေသည်…</div></div><span class="st">မနေ့က</span></div>
+   <div class="ph-row"><div class="av" style="background:var(--grad-chat)">G</div><div style="flex:1"><b>မောင်မောင်အုပ်စု</b><div class="ph-p">သီချင်း ပို့ထားသည်</div></div><span class="st">၃ ရက်</span></div>
+   ${nav('ချတ်')}</div>`,
+ swipe:()=>`<div class="ph-body" style="gap:8px;background:var(--coral-50)">${top('Dating')}<nav class="ph-bar" style="background:transparent;border:0">◀ Dating <span class="pill d" style="margin-left:auto;font-size:9px">Dating</span></nav>
+   <nav class="ph-tabs"><b class="on">ကတ်</b><b>Radar</b><b>အနီး</b><b>Like များ</b><b>တွဲဖက်</b></nav>
+   <div class="matchcard"><span class="stamp">LIKE</span><div class="ov"><b>နွယ် · 26</b><i>1 ကီလိုမီတာအတွင်း · ✓ verified</i><i>ခရီးသွား · ကော်ဖီ · ဓာတ်ပုံ</i></div></div>
+   <div class="actions"><span class="act">✕</span><span class="act" style="font-size:12px">↺</span><span class="act">★</span><span class="act p">♥</span></div></div>`,
+ match:()=>`<div class="ph-body" style="gap:8px;background:var(--coral-50)">${top('Dating')}
+   <p class="ph-p" style="text-align:center;letter-spacing:.1em;font-weight:600;color:var(--dating-text)">IT'S A MATCH!</p>
+   <div style="display:flex;align-items:center;justify-content:center;gap:-10px"><div class="av" style="width:64px;height:64px;font-size:20px">M</div><div class="av dating" style="width:64px;height:64px;font-size:20px;margin-left:-16px">W</div></div>
+   <p class="ph-h1" style="text-align:center">သင်နှင့် နွယ် တွဲဖက်ဖြစ်ပါပြီ</p>
+   <p class="ph-p" style="text-align:center">prompt: "အကြိုက်ဆုံး ခရီးစဉ်"</p>
+   <div class="ph-btn date">Icebreaker ဖြင့် စသည်</div><div class="ph-btn ghost">ရိုးရိုး စာပို့မည်</div>
+   <div class="tick no"><i>✕</i><span>liked state တွင် မက်ဆေ့ခ်ျ ပို့၍ မရ (403)</span></div></div>`,
+ datingchat:(n)=>`<div class="ph-body">${top('Dating')}<nav class="ph-bar">◀ နွယ် <span class="pill d" style="font-size:9px;margin-left:auto">✓ verified</span></nav>
+   <div class="banner">💡 Opener limit — ဖြေကြားမှု မရမချင်း ${3-n} ခုသာ ပို့နိုင်သည်</div>
+   ${[1,2,3].slice(0,n).map(()=>'<div class="bubble out">မင်္ဂလာပါ <span class="st" style="color:#DDE3FF">✓</span></div>').join('')}
+   ${n>=3?'<div class="bubble in">မင်္ဂလာပါ 😊</div>':''}
+   <div class="ph-btn ${n>=3?'ghost':'off'}" style="text-align:left">${n>=3?'ဖြေကြားမှု ရပြီ — ကန့်သတ်ချက် ပြေပြီ':'4 ကြိမ်မြောက် စာ ပို့၍ မရ (429 opener_limit)'}</div></div>`,
+ premium:(guest)=>`<div class="ph-body">${top('Premium')}<nav class="ph-bar">◀ Premium</nav>
+   <div class="pricetag">Ks 4,900<span style="font-size:12px;font-weight:400;color:var(--text-3)"> / လ</span></div>
+   <div class="tick"><i>✓</i><span>Super Like +2 / ရက်</span></div><div class="tick"><i>✓</i><span>Unlimited Undo</span></div><div class="tick"><i>✓</i><span>Read receipt ဖွင့်ခွင့်</span></div>
+   ${guest?'<div class="banner">Premium ဝယ်ယူရန် Gmail ချိတ်ဆက်ထားရပါမည်။</div><div class="ph-btn off">Gmail လိုအပ်သည် (403)</div>'
+   :'<div class="ph-btn">ဝယ်ယူရန်</div><div class="ph-btn ghost">Restore Purchases</div>'}</div>`,
+ transfer:(st)=>{const s={qr:`<p class="ph-h1">ယခင်ဖုန်းကို ဖွင့်ပါ</p><p class="ph-p">Settings › Account › ဖုန်းပြောင်းရန်</p><div class="qr"></div><div class="tick"><i>✓</i><span>token TTL 120s · hash သိမ်း · တစ်ကြိမ်သာ</span></div>`,
+   confirm:`<p class="ph-h1">ဤဖုန်းသို့ ပြောင်းမည့်လား?</p><div class="ph-card"><div class="av">P</div><div><b>Pixel 7 · 9f2c…</b><div class="ph-p">အတည်ပြုရန် biometric လိုအပ်</div></div></div><div class="ph-btn">အတည်ပြုသည်</div><div class="ph-btn ghost">ငြင်းပယ်သည်</div>`,
+   done:`<div class="tick"><i>✓</i><span>binding move — အသစ် ချိတ်ပြီး</span></div><div class="tick"><i>✓</i><span>ယခင် device session ၄ ခု revoke</span></div><div class="tick no"><i>✕</i><span>target တွင် guest ရှိလျှင် 409 guest_exists_on_target</span></div><div class="tick no"><i>✕</i><span>120s ကျော်လျှင် 410 token_expired</span></div><div class="ph-btn ghost">ပြီးပါပြီ</div>`}[st];
+   return `<div class="ph-body">${top('ဖုန်းပြောင်းရန်')}${s}</div>`}
+};
+
+/* ---------- flow data ---------- */
+const F=[
+ {id:'guest',label:'၁။ Guest ဝင်ရန်',accent:'trust',steps:[
+   {t:'Welcome screen',d:'ခလုတ်တစ်ခုတည်း — Gmail button မပါ။',api:'— (static)',mock:M.welcome(),cap:'entry: one-tap guest only'},
+   {t:'Device register',d:'raw id ကို TLS ဖြင့် တစ်ကြိမ်ပို့၊ server က HMAC-SHA256(pepper, raw_id) သိမ်း။',api:'POST /v1/auth/device/register',mock:M.guest(),cap:'raw device id ဘယ်တော့မှ မသိမ်းရ'},
+   {t:'Guest create / resume',d:'binding ရှိပြီးသားဆိုလျှင် account အသစ် မဖွင့်ပါ။',api:'POST /v1/auth/guest',mock:M.guest(),cap:'resume same account (T41)'},
+   {t:'Cooldown branch',d:'ဖျက်ထားသော device ဖြစ်လျှင် 429 + ကျန်ရက် ပြသည်။',api:'429 device_cooldown',mock:M.welcome(),cap:'30-day device cooldown (T42)'}]},
+ {id:'gmail',label:'၂။ Gmail ချိတ်ဆက်',accent:'market',steps:[
+   {t:'Settings → Linked accounts',d:'Login ဝင်ပြီးမှသာ ပေါ်သည်။',api:'GET /v1/me',mock:M.settings(false),cap:'is_guest = true'},
+   {t:'Benefit sheet',d:'ဘာရမလဲ ၃ ချက် ပြသည်။',api:'POST /v1/auth/identities/google/link:start',mock:M.gmail('sheet'),cap:'state + nonce, 300s TTL'},
+   {t:'Google consent',d:'server က id_token signature/aud/nonce + email_verified စစ်သည်။',api:'…link:complete',mock:M.gmail('consent'),cap:'client token ကို သက်သေ မယုံရ (T39)'},
+   {t:'Linked',d:'is_guest=false၊ Premium ပွင့်။ Duplicate → 409။',api:'200 identity linked',mock:M.gmail('done'),cap:'no account merge in v1 (T38)'},
+   {t:'Offline guard',d:'အောဖ်လိုင်းတွင် ခလုတ် ပိတ်ပြရမည်။',api:'offline',mock:M.gmail('offline'),cap:'T43 — silent fail မဖြစ်ရ'}]},
+ {id:'chat',label:'၃။ Chat offline-first',accent:'chat',steps:[
+   {t:'Compose (pending)',d:'Drift ထဲ အရင်ရေး၊ outbox သို့ ထည့်။',api:'local write + outbox',mock:M.chat('pending'),cap:'UI ချက်ချင်း တုံ့ပြန်'},
+   {t:'Ack → sent',d:'server ack နှင့် client_msg_id idempotency။',api:'POST /v1/chats/:id/messages',mock:M.chat('sent'),cap:'UUIDv7 + Idempotency-Key'},
+   {t:'Delivered → read',d:'read receipt ကို recipient ဆုံးဖြတ်သည်။',api:'WS message.status',mock:M.chat('read'),cap:'dating default = off'},
+   {t:'Offline list + retry',d:'banner + per-bubble retry၊ sequence က server seq ဖြင့် စီ။',api:'GET /v1/sync/changes',mock:M.chatlist(true),cap:'outbox drain after reconnect'}]},
+ {id:'dating',label:'၄။ Dating match → chat',accent:'dating',steps:[
+   {t:'Swipe',d:'right like · left pass · up super like၊ undo ၅/ရက်။',api:'GET /v1/dating/cards',mock:M.swipe(),cap:'18+ gate + filters first'},
+   {t:'Mutual match',d:'transaction + UNIQUE(user_a,user_b) race ကာကွယ်။',api:'POST /v1/dating/swipes → match',mock:M.match(),cap:'T1 · T2 (concurrency)'},
+   {t:'Opener limit',d:'ပထမ ၃ ခုသာ — ဖြေကြားမှ ပြေ။',api:'429 opener_limit',mock:M.datingchat(3),cap:'R1 server-enforced'},
+   {t:'Media blur + dormant',d:'ခွင့်ပြုမှ ဖွင့်ကြည့်၊ ၇ ရက် မဖြေလျှင် read-only။',api:'POST …/matches/:id/reopen',mock:M.datingchat(1),cap:'R3 · R7 · evidence 30d'}]},
+ {id:'premium',label:'၅။ Premium purchase',accent:'market',steps:[
+   {t:'Guest blocked',d:'guest ဖြင့် ငွေမပေးရ — Gmail လိုအပ်။',api:'403 identity_required',mock:M.premium(true),cap:'T21'},
+   {t:'Verify receipt',d:'client receipt → server verifies via store API။',api:'POST /v1/billing/purchase:verify',mock:M.premium(false),cap:'client entitlement မရောက်ရ'},
+   {t:'Restore',d:'appAccountToken / obfuscatedAccountId = account UUID။',api:'POST /v1/billing/restore',mock:M.premium(false),cap:'T22 · T23 duplicate 409'},
+   {t:'Refund webhook',d:'status → revoked ချက်ချင်း။',api:'Apple / Google webhook',mock:M.premium(false),cap:'T24'}]},
+ {id:'transfer',label:'၆။ QR device transfer',accent:'ink',steps:[
+   {t:'Start on old device',d:'token hash သိမ်း၊ TTL 120s၊ rate limit 2/3min၊ FLAG_SECURE။',api:'POST /v1/auth/transfer/start',mock:M.transfer('qr'),cap:'T25 expiry'},
+   {t:'Scan on new device',d:'target တွင် guest ရှိလျှင် reject။',api:'POST /v1/auth/transfer/redeem',mock:M.transfer('confirm'),cap:'T29 guest_exists'},
+   {t:'Biometric confirm',d:'old device မှာသာ အတည်ပြုခွင့်။',api:'POST /v1/auth/transfer/confirm',mock:M.transfer('confirm'),cap:'T27 without confirm = fail'},
+   {t:'Move binding',d:'transaction: token used · old binding delete · new binding · revoke sessions။',api:'200 confirmed',mock:M.transfer('done'),cap:'T28 old device → welcome'}]}
+];
+
+const bar=document.getElementById('flowbar'),stepsEl=document.getElementById('steps'),phone=document.getElementById('phone'),cap=document.getElementById('stagecap');
+F.forEach((f,i)=>{const b=document.createElement('button');b.className='flowbtn';b.type='button';b.dataset.accent=f.accent;
+ b.setAttribute('role','tab');b.setAttribute('aria-selected',i===0);b.textContent=f.label;b.onclick=()=>showFlow(i,0);bar.appendChild(b)});
+function showFlow(fi,si){
+  [...bar.children].forEach((b,i)=>b.setAttribute('aria-selected',i===fi));
+  const f=F[fi];stepsEl.innerHTML='';
+  f.steps.forEach((s,i)=>{const li=document.createElement('li');li.className='step';li.setAttribute('aria-current',i===si);
+    li.innerHTML=`<button class="b" type="button" aria-label="Step ${i+1}">${i+1}</button>
+      <p class="t">${s.t}</p><p class="d">${s.d}</p><span class="api">${s.api}</span>
+      ${s.cap?`<p class="edge">Edge / test → ${s.cap}</p>`:''}`;
+    li.querySelector('.b').onclick=()=>showFlow(fi,i);li.querySelector('.t').onclick=()=>showFlow(fi,i);
+    stepsEl.appendChild(li)});
+  phone.innerHTML=f.steps[si].mock();cap.textContent=f.steps[si].cap||f.steps[si].t;
+}
+showFlow(0,0);
+</script>
+</body>
+</html>

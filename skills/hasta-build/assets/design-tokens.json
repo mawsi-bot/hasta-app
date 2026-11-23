@@ -1,0 +1,337 @@
+{
+  "$schema": "https://design-tokens.org/schema.json",
+  "meta": {
+    "product": "Hasta",
+    "version": "1.0.0",
+    "designSystem": "DS 1.0.0",
+    "renamedFrom": "Nexus",
+    "themes": ["light", "dark", "amoled", "highContrast", "dataSaver"],
+    "defaultTheme": "light",
+    "rule": "Components MUST reference semantic tokens only. Hard-coded hex in component code is a CI failure."
+  },
+  "tier1_raw": {
+    "color": {
+      "blue.50": "#EAF1FE",
+      "blue.400": "#4C8DFF",
+      "blue.500": "#2F6FED",
+      "blue.600": "#2558C4",
+      "pink.400": "#FF6B93",
+      "pink.500": "#EF4B7B",
+      "green.500": "#1FA971",
+      "amber.400": "#F2A33C",
+      "amber.500": "#E0A500",
+      "red.500": "#E5484D",
+      "neutral.0": "#FFFFFF",
+      "neutral.50": "#F6F8FB",
+      "neutral.100": "#EEF1F6",
+      "neutral.200": "#E2E7EF",
+      "neutral.400": "#8A93A2",
+      "neutral.600": "#5B6472",
+      "neutral.800": "#1B2432",
+      "neutral.900": "#111827"
+    }
+  },
+  "tier2_semantic": {
+    "color": {
+      "bg.canvas":          { "light": "#F6F8FB", "dark": "#0E1621", "amoled": "#000000", "use": "app background" },
+      "bg.surface":         { "light": "#FFFFFF", "dark": "#16202C", "amoled": "#0B0B0B", "use": "card, list row" },
+      "bg.surfaceRaised":   { "light": "#FFFFFF", "dark": "#1E2A38", "amoled": "#111111", "use": "sheet, sticky bar" },
+      "bg.sunken":          { "light": "#EEF1F6", "dark": "#0A1219", "amoled": "#000000", "use": "input field, chat bg" },
+      "bg.overlay":         { "light": "#1118278F", "dark": "#000000A3", "use": "modal scrim 56%/64%" },
+      "bg.brandSubtle":     { "light": "#EAF1FE", "dark": "#16243D", "use": "selected row, mention" },
+      "bg.dangerSubtle":    { "light": "#FDECEC", "dark": "#2A1518", "use": "destructive background" },
+      "bg.datingSubtle":    { "light": "#FDECF1", "dark": "#2A1620", "use": "dating mode surface" },
+      "text.primary":       { "light": "#111827", "dark": "#E8EDF4", "use": "body, title" },
+      "text.secondary":     { "light": "#5B6472", "dark": "#9DA9BA", "use": "metadata, timestamp" },
+      "text.tertiary":      { "light": "#8A93A2", "dark": "#6E7A8B", "use": "placeholder, disabled" },
+      "text.onBrand":       { "light": "#FFFFFF", "dark": "#0B1220", "use": "on filled brand button" },
+      "text.link":          { "light": "#2F6FED", "dark": "#4C8DFF", "use": "link, @mention" },
+      "text.danger":        { "light": "#E5484D", "dark": "#FF6B70", "use": "error, delete" },
+      "icon.primary":       { "light": "#1B2432", "dark": "#C9D3E0", "use": "default icon" },
+      "icon.active":        { "light": "#2F6FED", "dark": "#4C8DFF", "use": "selected tab" },
+      "border.subtle":      { "light": "#E2E7EF", "dark": "#243141", "use": "divider" },
+      "border.strong":      { "light": "#CBD3DF", "dark": "#33445A", "use": "input border" },
+      "border.focus":       { "light": "#2F6FED", "dark": "#4C8DFF", "use": "2px focus ring" },
+      "accent.community":   { "light": "#1FA971", "dark": "#2FBF83", "use": "group badge" },
+      "accent.market":      { "light": "#F2A33C", "dark": "#F2A33C", "use": "listing / seller" },
+      "accent.dating":      { "light": "#EF4B7B", "dark": "#FF6B93", "use": "dating, match — dating module MUST use this token" },
+      "state.online":       { "light": "#1FA971", "dark": "#2FBF83", "use": "presence dot" },
+      "state.sending":      { "light": "#8A93A2", "dark": "#6E7A8B", "use": "clock icon (pending)" },
+      "state.read":         { "light": "#2F6FED", "dark": "#4C8DFF", "use": "double check read" },
+      "state.waiting":      { "light": "#E0A500", "dark": "#E0A500", "use": "offline queue" }
+    },
+    "contrast": {
+      "bodyOnBg": 4.5,
+      "largeTextOnBg": 3.0,
+      "functionalIconOnBg": 3.0,
+      "focusRingAdjacent": 3.0,
+      "myanmarTextOnBg": { "min": 4.5, "note": "MANDATORY — thin diacritics make 3:1 insufficient" },
+      "highContrastThemeText": 7.0,
+      "rule": "Never encode meaning by colour alone: icon + text always (colour-blind safety)."
+    }
+  },
+  "typography": {
+    "fontStack": {
+      "myanmar": "Noto Sans Myanmar (bundled; weights 400/500/600/700)",
+      "myanmarFallback": "Padauk (bundled, off by default) -> system",
+      "latin": "Inter (bundled)",
+      "zawgyi": "NEVER bundled — detect -> convert -> render Unicode; one-time toast; legacy display toggle in Settings > Appearance (default off)"
+    },
+    "scale": {
+      "display":    { "size": 28, "lineHeight": 40, "weight": 700, "letterSpacing": 0, "use": "onboarding title, match name" },
+      "h1":         { "size": 24, "lineHeight": 36, "weight": 700, "letterSpacing": 0, "use": "screen title" },
+      "h2":         { "size": 20, "lineHeight": 32, "weight": 600, "letterSpacing": 0, "use": "section header" },
+      "subtitle":   { "size": 17, "lineHeight": 28, "weight": 600, "letterSpacing": 0, "use": "list primary, post author" },
+      "body":       { "size": 15, "lineHeight": 26, "weight": 400, "letterSpacing": 0, "use": "post text, message" },
+      "bodyStrong": { "size": 15, "lineHeight": 26, "weight": 600, "letterSpacing": 0, "use": "unread chat name" },
+      "bodySm":     { "size": 14, "lineHeight": 24, "weight": 400, "letterSpacing": 0, "use": "comment, secondary" },
+      "caption":    { "size": 13, "lineHeight": 22, "weight": 400, "letterSpacing": 0, "use": "timestamp, metadata" },
+      "micro":      { "size": 11, "lineHeight": 18, "weight": 500, "letterSpacing": 0, "use": "badge count, tab label" },
+      "overline":   { "size": 12, "lineHeight": 20, "weight": 600, "letterSpacing": 0.2, "use": "section label — NEVER uppercase" },
+      "largeTextModeBody": { "size": 17, "note": "accessibility large-text mode" }
+    },
+    "myanmarRules": {
+      "minLineHeightRatio": 1.65,
+      "latinOnlyUiMinLineHeightRatio": 1.35,
+      "wordBreak": "syllable segmenter, never per-character",
+      "containerHeight": "min-height only, never fixed height",
+      "overflow": "ellipsis only, never clip",
+      "boldMaxWeight": 600,
+      "headingBoldMaxWeight": 700,
+      "inputVerticalPaddingExtra": 2,
+      "questionMark": "glue to preceding syllable",
+      "numerals": { "default": "arabic", "toggle": "myanmar (၁၂၃) in Settings > Appearance" }
+    },
+    "truncation": {
+      "postBody": { "maxLines": 6, "affordance": "ဆက်ဖတ်ရန်" },
+      "comment": { "maxLines": 4, "affordance": "ပိုကြည့်" },
+      "chatListLastMessage": { "maxLines": 1, "affordance": "ellipsis" },
+      "bubbleText": { "maxLines": null },
+      "name": { "maxLines": 1, "affordance": "ellipsis" },
+      "datingBio": { "maxLines": 3, "affordance": "ပိုကြည့်" }
+    }
+  },
+  "spacing": {
+    "base": 4,
+    "scale": [0, 2, 4, 8, 12, 16, 20, 24, 32, 40, 48, 64],
+    "usage": {
+      "screenHorizontalPadding": 16,
+      "cardInnerPaddingFeed": 12,
+      "cardInnerPaddingSettings": 16,
+      "listRowVerticalPadding": 12,
+      "avatarToText": 12,
+      "sectionGap": 24,
+      "stickyBarPadding": "12 + safe-area"
+    }
+  },
+  "layout": {
+    "breakpoints": {
+      "compact": { "max": 599, "layout": "1 column + bottom nav" },
+      "medium": { "min": 600, "max": 904, "layout": "navigation rail + 1.3 column feed, content max 640" },
+      "expanded": { "min": 905, "layout": "rail + list-detail" }
+    },
+    "contentMaxWidth": 640,
+    "lineLength": { "latinChars": 60, "myanmarSyllables": 40 },
+    "density": {
+      "comfortable": { "rowHeight": 68, "fontDelta": 0, "default": true },
+      "compact": { "rowHeight": 56, "fontDelta": -1 }
+    },
+    "safeAreas": {
+      "bottomNav": "12 + safe-area-bottom, must not touch gesture bar",
+      "topBar": "56 + status bar",
+      "keyboard": "ime-inset pushes input bar; auto-scroll or show 'နောက်ဆုံးသို့' pill"
+    }
+  },
+  "shape": {
+    "radius": { "xs": 6, "sm": 8, "md": 12, "card": 16, "sheet": 20, "pill": 999, "bubble": 16, "bubbleTail": 6 },
+    "borderWidth": { "subtle": 1, "focus": 2 }
+  },
+  "elevation": {
+    "e0": { "shadow": "none", "use": "flat list" },
+    "e1": { "shadow": "0 1 2 rgba(17,24,39,.06)", "use": "card" },
+    "e2": { "shadow": "0 4 12 rgba(17,24,39,.08)", "use": "sticky bar, FAB" },
+    "e3": { "shadow": "0 8 24 rgba(17,24,39,.12)", "use": "sheet, dialog" },
+    "e4": { "shadow": "0 16 40 rgba(17,24,39,.16)", "use": "popover menu" },
+    "lowEndCap": "e3",
+    "blurBackdrop": { "sheet": true, "dialog": false }
+  },
+  "motion": {
+    "duration": { "instant": 100, "fast": 150, "base": 200, "slow": 320, "celebrate": 600 },
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "decelerate": "cubic-bezier(0, 0, 0.2, 1)",
+      "accelerate": "cubic-bezier(0.4, 0, 1, 1)",
+      "spring": { "stiffness": 320, "damping": 30, "use": "swipe card, sheet dismiss" }
+    },
+    "limits": { "concurrentAnimatedElements": 3, "listStaggerMax": 8, "indeterminateProgressMaxMs": 2000 },
+    "reducedMotion": { "transitions": "fade only", "swipeCard": "cross-fade", "matchReveal": "static card" },
+    "loading": { "pattern": "skeleton", "shimmerOnLowEnd": false, "textStateAfterMs": 3000, "skeletonRowsMax": 6 }
+  },
+  "hapticsSound": {
+    "defaultSound": "off",
+    "defaultHaptics": "on",
+    "events": {
+      "buttonPress": { "haptic": "light" },
+      "reaction": { "haptic": "light", "sound": "subtle-off-default" },
+      "messageSend": { "haptic": "light" },
+      "messageReceiveInChat": { "haptic": "light-user-toggle", "sound": "off" },
+      "swipeDecision": { "haptic": "medium" },
+      "match": { "haptic": "success", "sound": "off-default" },
+      "destructiveConfirm": { "haptic": "warning" },
+      "error": { "haptic": "error" },
+      "callRing": { "sound": "ringtone-system-like" }
+    }
+  },
+  "iconography": {
+    "grid": 24, "liveArea": 20, "stroke": 1.5, "capJoin": "round",
+    "style": { "default": "outline", "active": "filled" },
+    "sizes": [16, 20, 24, 28],
+    "colors": ["icon.primary", "icon.active"],
+    "customMyanmarSet": ["pagoda", "market", "monastic", "bus-station", "phone-call", "offline-transfer", "qr", "radar"],
+    "rule": "icon-only buttons require tooltip + accessibility label; no ad-hoc hand-drawn icons"
+  },
+  "media": {
+    "avatarList": { "aspect": "1:1", "size": 40, "format": "WebP", "variants": [40, 80, 120] },
+    "avatarProfile": { "aspect": "1:1", "sizes": [96, 160], "format": "WebP" },
+    "datingPhoto": { "aspect": "4:5", "size": "640x800", "format": ["WebP", "AVIF"] },
+    "postImage": { "aspect": ["1:1", "4:5", "16:9"], "maxEdge": 1080, "format": "WebP" },
+    "feedVideoPreview": { "aspect": "16:9", "maxSeconds": 8, "muted": true, "autoplay": false, "format": "HLS" },
+    "sticker": { "aspect": "1:1", "size": 512, "format": "WebP-animated" },
+    "story": { "aspect": "9:16", "size": "720x1280" },
+    "placeholder": "BlurHash / LQIP before thumbnail",
+    "crop": "face-aware, aspect-ratio hard-coded to prevent layout shift",
+    "dataSaver": { "imageMaxPx": 320, "videoRequiresTap": true }
+  },
+  "performanceBudget": {
+    "firstScreenInteractiveMs": 2500,
+    "feedScrollFpsMin": 55,
+    "initialImagesPerScreenKbMax": 800,
+    "concurrentBlurShadowLayersMax": 2,
+    "concurrentAnimatedViewsMax": 3,
+    "fontFilesMax": 3,
+    "apkSizeMbMax": 45,
+    "coldStartMsMax": 2500,
+    "skeletonRowsMax": 6,
+    "targetDevice": "mid-range Android, 2-3GB RAM, 3G"
+  },
+  "navigation": {
+    "bottomNavItems": [
+      { "index": 1, "labelMy": "ပင်မ", "labelEn": "Home", "icon": "home", "badge": null },
+      { "index": 2, "labelMy": "ရှာဖွေ", "labelEn": "Discover", "icon": "compass", "badge": null },
+      { "index": 3, "labelMy": "ချတ်", "labelEn": "Chat", "icon": "chat", "badge": "unread count" },
+      { "index": 4, "labelMy": "အသိပေး", "labelEn": "Notifications", "icon": "bell", "badge": "social actions only" },
+      { "index": 5, "labelMy": "ပရိုဖိုင်", "labelEn": "Profile", "icon": "user", "badge": "friend request dot" }
+    ],
+    "maxItems": 5,
+    "datingEntry": "Profile -> ❤ Dating only (never a tab)",
+    "chatFolders": ["all", "private", "group", "channel", "dating", "unread"],
+    "labelHideAboveTextScale": 1.3,
+    "retapActiveTab": "scroll to top",
+    "preserveTabScrollState": true
+  },
+  "components": {
+    "total": 64,
+    "tier1_foundation": ["Button", "IconButton", "FAB", "Chip/FilterChip", "SegmentedControl", "TabBar", "Switch", "Checkbox/Radio", "Slider", "TextField", "TextArea", "SearchField", "OTPInput (library only, unused in v1)", "Select/Dropdown", "DatePicker (+age preview)", "Divider", "Progress", "Skeleton", "Avatar (+presence, +dating ring, +verified)", "Badge", "Tooltip", "Snackbar (+offline variant)"],
+    "tier2_compound": ["TopAppBar", "BottomNav", "NavigationRail", "ListItem", "SectionHeader", "Card", "BottomSheet", "Dialog", "ActionSheet", "PopoverMenu", "EmptyState", "ErrorState", "OfflineBanner", "PullToRefresh", "InfiniteScrollFooter", "Toast", "Stepper", "PhotoGrid", "MediaViewer", "ShareSheet", "VerificationBadge", "PresenceDot", "ReactionPill", "InfoRow"],
+    "tier3_domain": ["PostCard", "PostComposer", "StoryRing", "StoryViewer", "CommentThread", "ReactionPicker", "MessageBubble", "ReplyPreview", "AttachmentTray", "VoiceRecorder", "StickerPanel", "TypingIndicator", "DateSeparator", "UnreadDivider", "MatchCard", "SwipeOverlay", "RadarView", "AddressPicker"],
+    "buttonSizes": { "sm": 36, "md": 44, "lg": 52 },
+    "buttonVariants": ["primary", "secondary", "ghost", "danger", "link"],
+    "requiredStates": ["default", "pressed", "disabled", "loading", "focus"],
+    "touchTarget": { "ios": 44, "android": 48, "visualMinPerWcag22": 24 },
+    "documentationStandard": "anatomy, variants, sizes, states, tokens used, do/don't x2, a11y label, Myanmar text example, empty/loading/error",
+    "matchCard": { "aspect": "4:5", "stackDepth": 3, "stackScale": [1, 0.94, 0.88], "stackOffsetY": [0, 8, 16], "actionBar": { "pass": 60, "undo": 44, "super": 48, "like": 60 } },
+    "swipeOverlay": { "like": { "direction": "right", "color": "accent.community" }, "nope": { "direction": "left", "color": "text.danger" }, "super": { "direction": "up", "color": "icon.active" }, "rotateDeg": 12 },
+    "messageBubble": { "maxWidthPct": 78, "tailPx": 6, "contentTypes": 12 },
+    "radarView": { "rings": 3, "ownDot": "center", "others": "blurred avatar dot", "tap": "mini card" }
+  },
+  "stateMatrix": {
+    "requiredStatesPerScreen": 4,
+    "screens": {
+      "feed": { "loading": "skeleton 3 cards", "empty": "အသိုင်းအဝိုင်းနဲ့ စတင်ပါ + join 5 groups CTA", "error": "retry + show cached", "offline": "cached + top banner" },
+      "chatList": { "loading": "skeleton 6 rows", "empty": "စကားပြောမှု မရှိသေး + အဆက်အသွယ် ရှာရန်", "error": "retry", "offline": "cached" },
+      "thread": { "loading": "skeleton 4 bubbles", "empty": "မက်ဆေ့ချ် စတင်ပါ", "error": "per-bubble ပြန်ပို့ရန်", "offline": "waiting badge" },
+      "postDetail": { "loading": "skeleton", "empty": "မတွေ့ပါ / ဖျက်လိုက်ပြီ", "error": "retry", "offline": "cached", "permissionDenied": "ဒီပို့စ်ကို ကြည့်ခွင့် မရှိပါ" },
+      "datingCards": { "loading": "card skeleton", "empty": "ကိုက်ညီသူ မရှိသေး — filter ချဲ့ပါ", "error": "retry", "offline": "အင်တာနက် လိုအပ်သည်", "permissionDenied": "verification pending" },
+      "radar": { "loading": "radar placeholder", "empty": "အနီးတွင် မတွေ့ပါ — အကွာအဝေး တိုးပါ", "error": "retry", "offline": "last cached + timestamp", "permissionDenied": "township-level search" },
+      "profile": { "loading": "skeleton", "error": "retry", "offline": "cached", "permissionDenied": "private account" },
+      "settings": { "loading": "static", "error": "toast", "offline": "local only + ချိန်ညှိမှု သိမ်းမထားပါ" },
+      "search": { "loading": "recent + suggestions", "empty": "ရှာမတွေ့ပါ + spelling hint", "error": "retry", "offline": "bundled offline index" },
+      "linkedAccountsGmail": { "loading": "spinner during link flow", "empty": "မချိတ်ဆက်ရသေး + Connect CTA", "error": "မအောင်မြင်ပါ။ ပြန်ကြိုးစားပါ (E-…)", "offline": "disabled — online only", "permissionDenied": "OAuth cancelled -> return to sheet" }
+    }
+  },
+  "copy": {
+    "tone": "plain, respectful, encouraging; age-neutral (no ခင်ဗျား/ညီကို/အစ်ကို); formal-lite; light English loanwords allowed",
+    "errorFormula": "[what happened] + [what to do] + [(hidden) error code]",
+    "destructiveButtonRule": "verb only, never 'OK'; destructive action placed on the right in dialogs, last + red in action sheets",
+    "glossary": {
+      "Post": "ပို့စ်", "Comment": "မှတ်ချက်", "Share": "မျှဝေ", "Follow": "လိုက်ကြည့်",
+      "Friend request": "သူငယ်ချင်း တောင်းဆို", "Match": "တွဲဖက်", "Nearby": "အနီးအနား",
+      "Offline transfer": "အင်တာနက်မလိုဘဲ ပို့"
+    },
+    "forbidden": ["အပ်တင်", "ကွန်မန့်", "ရှဲ", "ဖော်လိုး", "ဖရန့်ရီကွက်", "မက်ချ်", "နီးဘိုင်း"],
+    "formats": {
+      "time": { "default": "24h (၁၉:၄၅)", "toggle": "12h" },
+      "relative": ["၅ မိနစ်က", "မနေ့က", "၁၂ ရက်", "၁ နှစ်က"],
+      "distance": ["၁ ကီလိုမီတာအတွင်း (<1km)", "~၃ ကီလိုမီတာ (band)"],
+      "fileSize": "၂.၄ MB",
+      "count": "၁,၂၄၅"
+    },
+    "keyStrings": {
+      "welcome.primary": "စတင်အသုံးပြုရန်",
+      "welcome.guestExplainer": "အီးမေးလ်၊ ဖုန်းနံပါတ် မလိုပါ။ ဤဖုန်းတွင် ချက်ချင်း စတင်နိုင်သည်။",
+      "welcome.guestRisk": "ဖုန်းပျောက်ပါက ဤအကောင့်ကို ပြန်ရနိုင်မည် မဟုတ်ပါ။ Gmail ချိတ်ဆက်ထားရန် အကြံပြုသည်။",
+      "settings.connectGmail": "Gmail ချိတ်ဆက်ရန်",
+      "settings.gmailLinked": "ချိတ်ဆက်ပြီး — h***@gmail.com",
+      "premium.guestBlocked": "Premium ဝယ်ယူရန် Gmail ချိတ်ဆက်ထားရပါမည်။",
+      "offline.banner": "အင်တာနက်မရှိပါ။ ပို့ထားသော စာများကို ချိတ်ဆက်သည်နှင့် ပို့ပေးပါမည်။",
+      "dating.openerLimit": "ဤချတ်တွင် နောက်ထပ် မက်ဆေ့ချ် ၁ ခုသာ ပို့နိုင်သေးသည်။ ဖြေကြားမှု ရရှိပါက ကန့်သတ်ချက် ပြေလျော့မည်။",
+      "dating.under18": "Dating ကို အသက် ၁၈ နှစ်ပြည့်ပြီးမှ အသုံးပြုနိုင်ပါသည်။",
+      "dating.unmatchTitle": "ဒီတွဲဖက်ကို ဖျက်မလား?",
+      "dating.unmatchBody": "နှစ်ဖက်စလုံးအတွက် ချက်ချင်း ပိတ်သွားမည်။ လုံခြုံရေးအတွက် သက်သေ ၃၀ ရက် ထိန်းထားပါမည်။",
+      "dating.unmatchAction": "ဖျက်သည်",
+      "error.generic": "မအောင်မြင်ပါ။ ခဏနေမှ ပြန်ကြိုးစားပါ။ (E-500)",
+      "error.uploadTooLarge": "ဖိုင် ကြီးလွန်းပါသည် (အများဆုံး ၂၀ MB)။ ဖိုင် သေးငယ်အောင် လုပ်ပါ။"
+    }
+  },
+  "handoffChecklist": [
+    "semantic tokens only (no hex in components)",
+    "5 states per component",
+    "Myanmar long-string test (2-stack / 3-stack glyphs)",
+    "text scale 1.3x and 2.0x tested",
+    "dark + AMOLED tested",
+    "empty / loading / error / offline present",
+    "a11y label + focus order defined",
+    "touch target >= 44",
+    "asset export WebP 1x/2x/3x + blurhash",
+    "animation spec uses duration/easing tokens"
+  ],
+  "qaGate": {
+    "hardCodedColors": 0,
+    "screenStateCoverageMin": 4,
+    "myanmarClipping": 0,
+    "zawgyiTest": "pass",
+    "contrastFails": 0,
+    "lowEndFeedFpsMin": 55,
+    "glossaryCompliancePct": 100
+  },
+  "governance": {
+    "versioning": "MAJOR.MINOR.PATCH — token break = MAJOR",
+    "changeRequest": "Figma comment + DS ticket, must list affected screens",
+    "review": "2 designers + 1 engineer + 1 PM, weekly 30 min",
+    "deprecation": "announced 1 release cycle ahead with migration note",
+    "ownership": "DS Lead has final say on tokens",
+    "documentation": "Storybook / Zeroheight, one page per component",
+    "figmaNaming": { "component": "Component/Variant/Size/State e.g. Button/Primary/MD/Pressed", "page": "[Module] Screen Name — State e.g. Chat/Thread — Offline" },
+    "figmaProperties": ["variant", "size", "state", "hasIcon", "iconPosition", "label", "leadingAvatar", "trailingBadge", "density", "isRTLsafe"]
+  },
+  "deliverables": [
+    "Figma Foundations file (colour/type/space/motion variables)",
+    "Component library 64 (all variants)",
+    "Screen templates 12 (feed, thread, chat list, profile, settings, dating x5, geo x1)",
+    "State matrix sheet",
+    "Icon set (standard 120 + Myanmar-specific 20)",
+    "Motion prototypes 8 (sheet, swipe, match, send, page transition)",
+    "Handoff checklist + QA gate document"
+  ],
+  "screenCount": 68
+}
