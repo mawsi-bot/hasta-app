@@ -190,6 +190,92 @@
         ]
       }
     },
+    "/v1/auth/identities/google/link:start": {
+      "post": {
+        "operationId": "IdentityController_start",
+        "summary": "Begin Gmail linking: PKCE auth_url + single-use state (300 s)",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkStartResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "feature_disabled"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/auth/identities/google/link:complete": {
+      "post": {
+        "operationId": "IdentityController_complete",
+        "summary": "Finish linking: server exchanges the code and verifies the id_token itself",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkCompleteDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LinkCompleteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthenticated (bad code/token) or token_expired (state)"
+          },
+          "409": {
+            "description": "identity_in_use"
+          },
+          "422": {
+            "description": "google_email_unverified"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "MeController_me",
@@ -536,6 +622,118 @@
         },
         "required": [
           "device_token"
+        ]
+      },
+      "LinkStartResponse": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string"
+          },
+          "nonce": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "auth_url": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "number",
+            "example": 300
+          }
+        },
+        "required": [
+          "state",
+          "nonce",
+          "scopes",
+          "auth_url",
+          "expires_in"
+        ]
+      },
+      "LinkCompleteDto": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "state",
+          "code"
+        ]
+      },
+      "LinkedIdentityView": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "google"
+            ]
+          },
+          "email_masked": {
+            "type": "string",
+            "nullable": true,
+            "example": "h***@gmail.com"
+          },
+          "linked_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "email_masked",
+          "linked_at"
+        ]
+      },
+      "LinkedAccountView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "is_guest": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "is_guest"
+        ]
+      },
+      "LinkCompleteResponse": {
+        "type": "object",
+        "properties": {
+          "identity": {
+            "$ref": "#/components/schemas/LinkedIdentityView"
+          },
+          "account": {
+            "$ref": "#/components/schemas/LinkedAccountView"
+          },
+          "unlocked": {
+            "example": [
+              "premium_purchase",
+              "restore_purchases",
+              "device_recovery"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "identity",
+          "account",
+          "unlocked"
         ]
       },
       "MeAccount": {

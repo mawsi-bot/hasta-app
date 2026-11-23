@@ -88,7 +88,7 @@ Request `{ "refresh_token": "rt_…", "device_token": "dt_…" }` → `200` new 
 → `200 { "state": "…", "nonce": "…", "scopes": ["openid","email","profile"], "auth_url": "https://accounts.google.com/o/oauth2/v2/auth?…", "expires_in": 300 }`
 
 `POST /v1/auth/identities/google/link:complete` — auth
-Request `{ "state": "…", "code": "…", "id_token": "…", "device_token": "dt_…" }`
+Request `{ "state": "…", "code": "…" }` — the server exchanges `code` (PKCE) and verifies the id_token itself. A client `id_token` (or any unknown field) → `400 validation_failed`. Device binding comes from the device-bound session (T46). The state is single-use, expires after 300 s, and is bound to the account and device that started it.
 → `200 { "identity": { "provider": "google", "email_masked": "h***@gmail.com", "linked_at": "…" }, "account": { "id": "018f…", "is_guest": false }, "unlocked": ["premium_purchase","restore_purchases","device_recovery"] }`
 Errors: `409 identity_in_use`, `422 google_email_unverified`, `401 token_expired` (state), `403 store_receipt_invalid`→n/a, `400 validation_failed`.
 
