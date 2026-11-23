@@ -1,5 +1,7 @@
-﻿# Secrets
+# Secrets
 .env
+.env.*
+!.env.example
 *.pem
 *.key
 *.keystore
@@ -10,6 +12,9 @@ dart_defines/*.json
 # Node
 node_modules/
 apps/server/dist/
+dist/
+coverage/
+*.log
 
 # Flutter
 .dart_tool/
@@ -22,3 +27,9 @@ Thumbs.db
 
 # Backup files
 *.bak
+
+# Terraform state (may contain secrets)
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
