@@ -1,6 +1,6 @@
 /**
  * T37 gate (SPEC 1.0.1 §16): fails on Google/Apple SIGN-IN ROUTES and on ID-token verification that skips
- * iss / aud / exp / nonce / email_verified. The Google auth library is PERMITTED (and required) inside
+ * iss / aud / exp / nonce / email_verified (verifyIdToken or the cert-based verifySignedJwtWithCerts[Async]). The Google auth library is PERMITTED (and required) inside
  * src/modules/identity — the gate targets routes and trust boundaries, never dependencies.
  * Pure function so fixtures prove it both passes and fails.
  */
@@ -23,7 +23,7 @@ export function t37Violations({ files }: GateInput): string[] {
   for (const f of files) {
     if (SIGN_IN_ROUTE.test(f.text)) out.push(`sign-in route: ${f.path}`);
     if (GOOGLE_LIB.test(f.text) && !IDENTITY_MODULE.test(f.path)) out.push(`google auth outside modules/identity: ${f.path}`);
-    if (/verifyIdToken\s*\(/.test(f.text)) {
+    if (/verify(IdToken|SignedJwtWithCerts(Async)?)\s*\(/.test(f.text)) {
       for (const [claim, re] of REQUIRED_CLAIMS) if (!re.test(f.text)) out.push(`verification skips ${claim}: ${f.path}`);
     }
   }

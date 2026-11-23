@@ -25,6 +25,10 @@ const schema = z
     HASTA_DEVICE_PEPPER: z.string().min(32).optional(),
     HASTA_JWT_ACCESS_SECRET: z.string().min(32).optional(),
     HASTA_DEVICE_TOKEN_SECRET: z.string().min(32).optional(),
+    /** Google OAuth web client (SPEC §19). The client secret lives in the Secrets bundle in deployed envs. */
+    HASTA_GOOGLE_CLIENT_ID: z.string().min(1).optional(),
+    HASTA_GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
+    HASTA_GOOGLE_REDIRECT_URI: z.string().url().optional(),
     HASTA_AUTH_GUEST_ENABLED: bool.default('true'),
     HASTA_AUTH_GOOGLE_SIGNIN_ENABLED: bool.default('false'),
     HASTA_AUTH_GOOGLE_LINK_ENABLED: bool.default('true'),
