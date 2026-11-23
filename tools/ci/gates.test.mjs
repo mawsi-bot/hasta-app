@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import {
-  ROOT, readAllowlist, allowlistErrors, t45Violations, t48Violations, storeTagAllowed, mobileDepViolations,
+  ROOT, readAllowlist, allowlistErrors, t45Violations, t48Violations, storeTagAllowed, mobileDepViolations, mobileImportViolations,
 } from './gates.mjs';
 
 const LEGACY = 'nex' + 'us';
@@ -72,4 +72,12 @@ test('T37 (mobile boundary): a planted google_sign_in / sign_in_with_apple depen
   const planted = real.replace(/^dependencies:\n/m, 'dependencies:\n  google_sign_in: ^6.2.1\n');
   assert.deepEqual(mobileDepViolations(planted), ['google_sign_in']);
   assert.deepEqual(mobileDepViolations('dev_dependencies:\n  sign_in_with_apple: ^6.0.0\n'), ['sign_in_with_apple']);
+});
+
+test('T37 (mobile boundary): a planted sign-in SDK import in lib/ fails; the real tree passes', () => {
+  assert.deepEqual(mobileImportViolations(), []);
+  const planted = [{ path: 'apps/mobile/lib/x.dart', text: "import 'package:google_sign_in/google_sign_in.dart';" },
+    { path: 'apps/mobile/lib/y.dart', text: 'import "package:sign_in_with_apple/sign_in_with_apple.dart";' },
+    { path: 'apps/mobile/lib/z.dart', text: "// mentions google_sign_in in a comment only\nimport 'package:flutter_web_auth_2/flutter_web_auth_2.dart';" }];
+  assert.deepEqual(mobileImportViolations(planted), ['apps/mobile/lib/x.dart', 'apps/mobile/lib/y.dart']);
 });

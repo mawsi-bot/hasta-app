@@ -2,7 +2,7 @@
 // Static gates T45 (legacy name), T48 (Postgres major 16), T49 (store tag), T37 mobile boundary.
 // CLI: node tools/ci/gates.mjs <t45|t48|t49 <tag>|mobile-deps|all>. Tests: node --test tools/ci/
 import { execFileSync } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -60,13 +60,24 @@ export const storeTagAllowed = (tag) => typeof tag === 'string' && /^v1\./.test(
 export const mobileDepViolations = (pubspec) =>
   ['google_sign_in', 'sign_in_with_apple'].filter((p) => new RegExp(`^\\s+${p}\\s*:`, 'm').test(pubspec));
 
+const SDK_IMPORT = /^\s*import\s+['"]package:(google_sign_in|sign_in_with_apple)\//m;
+const dartFiles = (dir) => readdirSync(join(ROOT, dir), { recursive: true }).filter((f) => f.endsWith('.dart'))
+  .map((f) => ({ path: `${dir}/${f}`, text: readFileSync(join(ROOT, dir, f), 'utf8') }));
+
+/** T37 mobile boundary, source side: no sign-in SDK import anywhere in apps/mobile/lib (even if a dep sneaks in transitively). */
+export const mobileImportViolations = (files = dartFiles('apps/mobile/lib')) =>
+  files.filter((f) => SDK_IMPORT.test(f.text)).map((f) => f.path).sort();
+
 function main([cmd, arg]) {
   const read = (p) => readFileSync(join(ROOT, p), 'utf8');
   const checks = {
     t45: () => [...allowlistErrors(readAllowlist()), ...t45Violations().map((f) => `${f}: legacy product name`)],
     t48: () => t48Violations(read('docker-compose.yml'), read('.github/workflows/ci.yml')),
     t49: () => (storeTagAllowed(arg) ? [] : [`tag '${arg ?? ''}' does not match ^v1\\. — store upload refused`]),
-    'mobile-deps': () => mobileDepViolations(read('apps/mobile/pubspec.yaml')).map((p) => `${p}: forbidden in the app`),
+    'mobile-deps': () => [
+      ...mobileDepViolations(read('apps/mobile/pubspec.yaml')).map((p) => `${p}: forbidden in the app`),
+      ...mobileImportViolations().map((f) => `${f}: sign-in SDK import`),
+    ],
   };
   const run = cmd === 'all' ? ['t45', 't48', 'mobile-deps'] : [cmd];
   let fail = false;
