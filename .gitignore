@@ -1,12 +1,24 @@
-node_modules/
-dist/
-coverage/
+﻿# Secrets
 .env
-.env.*
-!.env.example
-*.log
+*.pem
+*.key
+*.keystore
+*.jks
+dart_defines/*.json
+!dart_defines/*.example.json
+
+# Node
+node_modules/
+apps/server/dist/
+
+# Flutter
+.dart_tool/
+build/
+apps/mobile/.flutter-plugins*
+
+# OS
+Thumbs.db
 .DS_Store
-.terraform/
-*.tfstate
-*.tfstate.*
-.terraform.lock.hcl
+
+# Backup files
+*.bak

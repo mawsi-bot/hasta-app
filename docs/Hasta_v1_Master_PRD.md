@@ -32,9 +32,11 @@
 | DB schema/migration prefix | `hasta_` (no table prefix required; DB name `hasta`) |
 | Env var prefix | `HASTA_` |
 | Design System version | `DS 1.0.0` |
-| Spec version | `SPEC 1.0.1` — patch after Sprint 1 (see §22 Change log) |
+| Spec version | `SPEC 1.0.2` — patch after PR #2 (see §22 Change log) |
 
 Version bumping: `MAJOR.MINOR.PATCH`. Design-token breaking change = DS MAJOR. API breaking change = new `/v2/` prefix, never in-place mutation of `/v1/`.
+
+**Tag rule (added 1.0.2):** internal milestone tags MAY be `0.x` (`v0.1.0` etc.) while the app is unreleased, which keeps `1.0.0 / build 1` meaningful as the first store-submitted artefact. A `0.x` tag must never reach a Google Play track or TestFlight — CI blocks any store-upload job whose tag does not match `^v1\.`. Fastlane derives `versionName`/CFBundleShortVersionString from the tag, so a `0.x` tag pushed to a track is an immediate release bug.
 
 ### 0.2 Rename map (apply mechanically everywhere, including strings, comments, CI, Terraform, store listings)
 
@@ -961,7 +963,7 @@ Machine-readable tokens: `Hasta_v1_Design_Tokens.json` (companion file). Rule: *
 | `bg.brandSubtle` | `#EAF1FE` | `#16243D` | selected, mention |
 | `bg.brand` | `#4C5EF6` | `#4C8DFF` | **primary button / brand fill** (new in 1.0.1 — fills the gap that forced ADR-0005) |
 | `bg.brandPressed` | `#3D4EE0` | `#7C8BFF` | pressed state (scale .98 + this fill) |
-| `bg.brandDisabled` | `#B9C2FF` @ 40% | `#4C8DFF` @ 30% | disabled primary |
+| `bg.brandDisabled` | `#B9C2FF` @ 40% | `#4C8DFF` @ 40% | disabled primary (**DS JSON is the single source of truth** — PRD mirrors `opacity: 0.4` for both themes) |
 | `bg.dangerSubtle` | `#FDECEC` | `#2A1518` | destructive bg |
 | `bg.datingSubtle` | `#FDECF1` | `#2A1620` | dating mode surface |
 | `text.primary` | `#111827` | `#E8EDF4` | body, title |
@@ -1123,10 +1125,12 @@ Hard-coded colours 0 · states ≥ 4 per screen · Myanmar clipping 0 and Zawgyi
 | 42 | Guest creation during device cooldown | 429 `device_cooldown` with remaining days | Unit |
 | 43 | Connect Gmail while offline | action visibly disabled with reason copy | UI/E2E |
 | 44 | After Connect Gmail, purchase flow | entitlement attachable, `is_guest=false` | Integration |
-| 45 | Word "nexus" anywhere in build artefacts/source | 0 matches | Static/CI |
+| 45 | Legacy product name anywhere in shipped code or build artefacts | 0 matches. **Docs that exist to perform the rename may be excluded only by explicit file allowlist** (`docs/**` spec + ADR + copy-review files, and nothing else); `apps/**`, `infra/**`, `design/**`, `tools/**` may never be added to the allowlist, and the allowlist itself must be asserted by a test | Static/CI |
 | 46 | Refresh token replayed from a **different device binding** | `401` + whole token family revoked (refresh is device-bound) | Security |
 | 47 | `docs/api/openapi.*` has a breaking change vs the previous tag | build fails (`spectral` lint + breaking-change diff; JSON or YAML both accepted) | Static/CI |
-| 48 | Local `docker-compose.yml` database image is not `postgres:16` | CI/static gate fails (local Postgres 18 vs CI 16 drift is a real defect source) | Static/CI |
+| 48 | Local `docker-compose.yml` database is not **PostgreSQL major 16** | CI/static gate fails (local Postgres 18 vs CI 16 drift is a real defect source). **`postgres:16.x` and `postgis/postgis:16-3.4` both satisfy this gate — the gate pins the major version, it does not ban PostGIS.** Dropping PostGIS to satisfy T48 is a gate misreading, not a fix | Static/CI |
+| 49 | A store-upload job (Play track / TestFlight) runs on a tag that does not match `^v1\.` | CI job fails closed (§0.1 Tag rule) | Static/CI |
+| 50 | Config value resolution order is wrong, or a remote-config fetch failure blocks startup | must resolve **remote > env > code default**, fall back silently with a single warning log, and never block boot | Unit |
 
 ### 16.2 Core product tests (T1–T19)
 
@@ -1308,6 +1312,8 @@ Access in test builds: welcome screen → long-press logo 3 s → `Quick test ac
 | 20.8 | Apple identity link UI | **Deferred to v1.1** (schema and endpoints ready, flag off) | PO |
 | 20.9 | Voice/video call | **v1.1** | PO |
 | 20.10 | Myanmar numerals default | Assumed off (Arabic default) per DS | Design |
+| 20.11 | **Remote-config source** | PR #2 ships a config indirection with no live source — values are code/env overridable only. Accepted, conditional: the live poller must land **no later than Sprint 4** and must cover every `[PROPOSAL]` key that ships from Sprint 5 onward (feed weights, opener limit, dormant window, Super Like/Undo caps, all four TTL/rate keys). Until then, no `[PROPOSAL]` value may be described as tunable in the field. Gate T50 defines the required behaviour | PO + DevOps |
+| 20.12 | Legacy-named cloud project (Supabase, paused) | Agent cannot rename or delete it — this is a **manual owner action**, not sprint work. ADR-0007 records the decision and the project stays paused and unreferenced. Not a code dependency; rename to `hasta-legacy-archive` or delete when the owner has time | PO (manual) |
 
 **Assumptions the agent must not silently change:** no phone/OTP anywhere; no Google *sign-in* in v1; guest is a first-class production path (not only a dev hack); dating data is never visible to social surfaces; all retention numbers above are proposals pending legal sign-off, not legal advice.
 
@@ -1361,6 +1367,12 @@ For every feature deliver:
 | 1.0.1 | 2026-11-23 | Myanmar line-height floor **1.65× confirmed to override the §14.2 table for Myanmar text at every size** (incl. `display`, `h1`); Latin-only UI may use 1.35× | Sprint 1 raised `display`/`h1` to 1.65 — accepted, and the ambiguity between §4.2/§14.2 and the Myanmar rule is resolved in favour of the floor |
 | 1.0.1 | 2026-11-23 | Accepted Sprint 1 deviations logged: Prisma as the locked ORM (spec already offered the choice), `profiles.field_hlc`, idempotency keyed by scope for pre-auth token endpoints, `sessions.revoked_reason` / `last_seen_at`, native device-id channel, `path_provider` for Drift | see §20 for what stays open |
 | 1.0.1 | 2026-11-23 | New hard gate: background outbox drain (WorkManager / BGTaskScheduler) **must land by Sprint 3**, not Sprint 8 | until then the "offline-first" promise is only partly true — the outbox drains only while the app is open |
+| **1.0.2** | 2026-11-23 | T48 reworded: the gate pins **PostgreSQL major 16**, and `postgis/postgis:16-3.4` satisfies it | PR #2 satisfied T48 by replacing PostGIS with plain `postgres:16.16`. That was the gate's wording, not the agent's judgement — `dating_profiles.location geometry(Point,4326)` + the GiST index in §13 cannot build without the extension, so this had to be corrected at the source |
+| 1.0.2 | 2026-11-23 | T45 exclusions narrowed to an explicit **file allowlist**; `apps/**`, `infra/**`, `design/**`, `tools/**` may never be excluded; the allowlist itself needs a test | PR #2 fixed failing main CI by adding "T45 exclusions" — right outcome, needs a bound so the exclusion cannot widen into the shipped surface |
+| 1.0.2 | 2026-11-23 | New gates **T49** (store-upload job fails closed on a non-`v1.` tag) and **T50** (remote > env > code default, fetch failure must not block boot) | repo is tagged `v0.1.0`; and four `[PROPOSAL]` values have a config indirection but no live source until Sprint 4 |
+| 1.0.2 | 2026-11-23 | §0.1 Tag rule added — `0.x` internal tags allowed pre-launch, never on a store track | reconciles `v0.1.0` with the fixed `1.0.0 / build 1` store version |
+| 1.0.2 | 2026-11-23 | `bg.brandDisabled` = **40% opacity in both themes**; DS JSON declared the single source of truth for token values, PRD mirrors it | PR #2 ADR-0006 open question: JSON said 40%, PRD said 30%. The agent followed the machine-readable file — correct behaviour; the prose was the wrong one |
+| 1.0.2 | 2026-11-23 | Zawgyi interim rule accepted: server rejects with `zawgyi_detected` and stores nothing, behind a flag, removed when convert-on-write lands in Sprint 3; the rejection copy must be Myanmar and tell the user to switch to Unicode | PR #2 shipped a reject stub ahead of schedule. Safer than storing mixed encodings, but a hard reject left in place would lock out Zawgyi keyboards |
 
 ---
 

@@ -10,7 +10,7 @@ import 'package:hasta/shared/widgets/hasta_button.dart';
 // (ADR-0006 closes ADR-0005). Expected values come from the DS JSON, not from the generated Dart.
 Color dsColor(String token, String theme) {
   final Map<String, dynamic> ds =
-      jsonDecode(File('../../design/hasta-ds-1.0.1.json').readAsStringSync()) as Map<String, dynamic>;
+      jsonDecode(File('../../design/hasta-ds-1.0.2.json').readAsStringSync()) as Map<String, dynamic>;
   final Map<String, dynamic> t = (ds['tier2_semantic'] as Map<String, dynamic>)['color'][token] as Map<String, dynamic>;
   final String h = (t[theme] as String).substring(1);
   final int alpha = ((t['opacity'] as num? ?? 1) * 255).round();

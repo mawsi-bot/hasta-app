@@ -2,9 +2,17 @@
   "$schema": "https://design-tokens.org/schema.json",
   "meta": {
     "product": "Hasta",
-    "version": "1.0.0",
-    "designSystem": "DS 1.0.1",
-    "patch1_0_1": ["added bg.brand / bg.brandPressed / bg.brandDisabled fill tokens (primary button no longer borrows text.link)", "confirmed Myanmar line-height floor 1.65x overrides the type-scale table at every size", "measured contrast values added under contrast.measured"],
+    "appVersion": "1.0.0",
+    "build": 1,
+    "dsVersion": "1.0.2",
+    "specVersion": "SPEC 1.0.2",
+    "versionClarification": "appVersion is the store artefact version and stays 1.0.0 until first submission; dsVersion is THIS file's version and is 1.0.2. Any tool that reads a single field must read dsVersion, not appVersion.",
+    "sourceOfTruth": "This JSON is the single source of truth for token values. Where PRD prose and this file disagree, this file wins and the PRD is corrected.",
+    "patchLog": {
+      "1.0.1": ["added bg.brand / bg.brandPressed / bg.brandDisabled fill tokens (primary button no longer borrows text.link)", "confirmed Myanmar line-height floor 1.65x overrides the type-scale table at every size", "measured contrast values added under contrast.measured"],
+      "1.0.2": ["bg.brandDisabled opacity set to 0.4 for BOTH light and dark (PRD prose previously said 30% for dark — prose corrected, ADR-0006 closed)", "meta split into appVersion / build / dsVersion / specVersion because a single 'version' field was read as the DS version", "legacy product name literal removed from this file: design/ must stay scannable by T45, and T45's allowlist may never cover design/**"]
+    },
+    "renamedFrom": "legacy product name — see docs/ADR/0007 and the rename map in docs/Hasta_v1_Master_PRD.md section 0.2. The literal string is intentionally absent from this file so the design/ tree can never be added to the T45 exclusion allowlist.",
     "themes": ["light", "dark", "amoled", "highContrast", "dataSaver"],
     "defaultTheme": "light",
     "rule": "Components MUST reference semantic tokens only. Hard-coded hex in component code is a CI failure."
