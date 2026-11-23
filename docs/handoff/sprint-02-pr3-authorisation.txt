@@ -1,0 +1,44 @@
+Hasta — PR #2 verdict + PR #2b scope + PR #3 authorisation (SPEC 1.0.2). Paste this text to the agent. SPEC is now 1.0.2; re-read docs/Hasta_v1_Master_PRD.md §22 Change log, §16 T45/T48/T49/T50, §20.11 and §20.12 before you type anything else.
+
+=== 1. VERDICT: APPROVE PR #2. Merge it. Then start Sprint 2 in this order: PR #2b, then PR #3. ===
+
+What was good, and keep doing it:
+- Every gate you claim was observed red first. The T46 case is the strongest evidence in the report: you DELETED an existing check to watch the test fail, then restored it. That is exactly the discipline this project is being bought for, and it is why your "93/93" number is believable.
+- T37 was narrowed with a positive fixture plus 8 negative fixtures, so the gate cannot silently rot back into a dependency ban or quietly pass everything.
+- Removing the "offline-first" wording from ADRs and comments because the feature is not true yet is the correct call. Restate that only when WorkManager and BGTaskScheduler both drain the outbox.
+- 398 added lines, one area per commit, and you fixed failing main CI (run 45134366075) instead of routing around it.
+- You did not merge PR #2 without authorisation. Keep doing that.
+
+=== 2. P1 — PR #2b (infra/spec conformance), merge before PR #3 ===
+
+You satisfied T48 by replacing postgis/postgis:16-3.4 with plain postgres:16.16. That was my gate's wording, not your judgement, and SPEC 1.0.2 now says so explicitly: T48 pins the PostgreSQL MAJOR version and postgis/postgis:16-3.4 satisfies it. Undo it.
+
+Why it cannot wait for Sprint 8: §13 declares dating_profiles.location as geometry(Point,4326) with a GiST index. That DDL cannot execute on a PostGIS-less image. Today it is dormant because the dating tables land in Sprint 7. The longer the compose stack stays extension-less, the more Sprint 2-6 integration tests get written against a database that cannot host the shipped schema — and swapping the base image later is exactly the kind of change that breaks three weeks of "passing" tests at once.
+
+PR #2b scope, 400 lines or fewer, TDD order (each item: write the failing assertion, show it red, then fix):
+1. docker-compose: restore postgis/postgis:16-3.4 (pinned by digest is preferred, keep the existing digest style). Add a CI assertion that the compose database image major is 16 AND that CREATE EXTENSION postgis succeeds. Watch that assertion fail against the current postgres:16.16 image before you change it.
+2. T45 exclusions: convert the blanket exclusion into an explicit file allowlist (docs spec files, ADRs, copy-review docs). Add a test asserting (a) the allowlist contains no path under apps/, infra/, design/ or tools/, and (b) a planted legacy-name string inside apps/server/src fails the gate. Test (b) is the one that proves the exclusion has teeth.
+3. T49: the store-upload job must fail closed on any tag not matching ^v1\. . Add the guard plus a test that feeds it a v0.1.0 tag and expects failure. The repo is tagged v0.1.0 now, so today a careless Fastlane lane could push a 0.x build onto a Play track.
+4. T50: assert config resolution order remote > env > code default, and that a remote fetch failure falls back to code defaults with one warning log and never blocks boot. Right now there is no live source until Sprint 4, so the fallback path IS the production path — it must be tested, not assumed.
+5. bg.brandDisabled: keep 40% (you followed the JSON, which was the right instinct — SPEC 1.0.2 declares the DS JSON the single source of truth and I corrected the PRD prose). Close ADR-0006 with that ruling.
+6. Remote-config key namespacing: prefix the four keys (e.g. config.hasta.device_token_ttl_days). Unprefixed snake_case keys collide the moment a shared provider lands.
+
+=== 3. Your DEVIATION list, ruled ===
+
+- Dark bg.brandDisabled 40 vs 30 — ACCEPTED, JSON wins, PRD corrected (item 5 above).
+- PostGIS replaced — REJECTED, revert in PR #2b item 1. Gate wording was wrong, fixed in SPEC 1.0.2.
+- Dropped the app-manifest google_sign_in ban — REJECTED, restore it. SPEC 1.0.2 §16 T37 targets routes and trust boundaries on the SERVER, where google-auth-library is required. The Flutter app is a different boundary: the app must not depend on google_sign_in at all, because Gmail LINKING (SPEC §5.4) uses ASWebAuthenticationSession on iOS and Custom Tabs on Android, then hands the code to link:complete for SERVER-side verification. So the package ban is not a dependency-ban mistake, it is the structural enforcement of "no Google button on the welcome screen". Re-add it as a mobile static gate with a test proving a planted google_sign_in dependency fails the build. If PR #3 finds a genuine need for the package, stop and raise it as a spec question instead of removing the gate.
+- No offline-first claim — ACCEPTED and correct. Due Sprint 3, unchanged.
+
+=== 4. Three things I still need from you ===
+
+1. Which mobile test is the 1 skipped, and what unblocks it? A skip without a linked ticket is a silent TODO. Open HAS-xxx for it and put the ticket id in the skip reason.
+2. Confirm SPEC 1.0.2 was read into this session (reply with the §22 row count you see), so I know you are working from the patched file and not your cached 1.0.1.
+3. The 200% text-scale check for match-reveal is deferred to the dating sprint — accepted, but log it as a dated backlog item now, not in memory.
+
+=== 5. PR #3 is authorised to start once PR #2b is merged ===
+
+Branch: feature/HAS-300-gmail-link, off main. Scope: SPEC 1.0.2 §5.4 only — link:start, link:complete, DELETE unlink with the recovery guard, plus the Settings > Account > Linked accounts sheet with all five states, masked email, DS keyStrings benefit copy, and my + en i18n keys (PENDING-COPY allowed on Myanmar values, English value required).
+Include tests T38, T39, T44 and the real T43 (offline-disabled must now be verified against the actual flow), plus re-run T37 on both boundaries. Each written first and shown red.
+400 lines or fewer — if it will not fit, split the Flutter sheet into PR #3b rather than growing the PR.
+Recovery endpoints (§5.5 lost-device) and QR transfer are PR #4 and PR #5. Do not pull them forward.

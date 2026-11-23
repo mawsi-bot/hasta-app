@@ -32,9 +32,11 @@
 | DB schema/migration prefix | `hasta_` (no table prefix required; DB name `hasta`) |
 | Env var prefix | `HASTA_` |
 | Design System version | `DS 1.0.0` |
-| Spec version | `SPEC 1.0.0` |
+| Spec version | `SPEC 1.0.2` — patch after PR #2 (see §22 Change log) |
 
 Version bumping: `MAJOR.MINOR.PATCH`. Design-token breaking change = DS MAJOR. API breaking change = new `/v2/` prefix, never in-place mutation of `/v1/`.
+
+**Tag rule (added 1.0.2):** internal milestone tags MAY be `0.x` (`v0.1.0` etc.) while the app is unreleased, which keeps `1.0.0 / build 1` meaningful as the first store-submitted artefact. A `0.x` tag must never reach a Google Play track or TestFlight — CI blocks any store-upload job whose tag does not match `^v1\.`. Fastlane derives `versionName`/CFBundleShortVersionString from the tag, so a `0.x` tag pushed to a track is an immediate release bug.
 
 ### 0.2 Rename map (apply mechanically everywhere, including strings, comments, CI, Terraform, store listings)
 
@@ -278,7 +280,7 @@ There is **no** Google/Gmail button on this screen. Design must not add one; cod
 5. response: {access_token(15m), refresh_token(rotation), account, is_new:true}
 ```
 
-**Tokens:** JWT access token 15 min; refresh token rotation with reuse detection (reuse ⇒ revoke whole family, force re-guest). Tokens stored in Keychain/Keystore only, never in SQLite or logs.
+**Tokens:** JWT access token 15 min; refresh token rotation with reuse detection (reuse ⇒ revoke whole family, force re-guest). **A refresh token is bound to `(account_id, device_hash)` and is rejected with `401` when presented from a different binding** (test T46). Tokens stored in Keychain/Keystore only, never in SQLite or logs. Access/refresh TTLs are `[PROPOSAL]` remote-config values — Sprint 1 shipped 15 min / 30 d refresh / 365 d device token, which is accepted for v1 provided the device binding above holds.
 
 **Test-mode easy access (required for QA / beta):** see §19. In `test` and `beta` builds a `Quick test accounts` panel is available on the welcome screen behind a long-press of the logo (3 s), giving one-tap login to 6 pre-seeded accounts (2 dating-verified, 1 page owner, 1 under-18-blocked, 1 premium, 1 fresh guest). This panel **must not exist** in `release`/`production` builds (compile-time flag + CI check T36).
 
@@ -959,6 +961,9 @@ Machine-readable tokens: `Hasta_v1_Design_Tokens.json` (companion file). Rule: *
 | `bg.sunken` | `#EEF1F6` | `#0A1219` | input, chat bg |
 | `bg.overlay` | `#111827` @56% | `#000000` @64% | scrim |
 | `bg.brandSubtle` | `#EAF1FE` | `#16243D` | selected, mention |
+| `bg.brand` | `#4C5EF6` | `#4C8DFF` | **primary button / brand fill** (new in 1.0.1 — fills the gap that forced ADR-0005) |
+| `bg.brandPressed` | `#3D4EE0` | `#7C8BFF` | pressed state (scale .98 + this fill) |
+| `bg.brandDisabled` | `#B9C2FF` @ 40% | `#4C8DFF` @ 40% | disabled primary (**DS JSON is the single source of truth** — PRD mirrors `opacity: 0.4` for both themes) |
 | `bg.dangerSubtle` | `#FDECEC` | `#2A1518` | destructive bg |
 | `bg.datingSubtle` | `#FDECF1` | `#2A1620` | dating mode surface |
 | `text.primary` | `#111827` | `#E8EDF4` | body, title |
@@ -1112,7 +1117,7 @@ Hard-coded colours 0 · states ≥ 4 per screen · Myanmar clipping 0 and Zawgyi
 | 34 | Non-moderator accesses evidence vault | 403, no access-log leak | Security |
 | 35 | Server attempts to read user Drive backup | impossible (client-side encryption, key never leaves device) | Security |
 | 36 | `release`/`production` build contains the quick-test-account panel | **fail build** | Static/CI |
-| 37 | Any Google *sign-in* endpoint exists (`/auth/google/signin`, token-only login) | **fail build** | Static/CI |
+| 37 | A Google **sign-in route** exists (`/auth/*/signin`, or any login path accepting a raw `id_token`), **or** verification skips `iss`/`aud`/`exp`/`nonce`/`email_verified`. A Google auth **library is permitted and required** inside `modules/identity` for link verification — the gate targets routes and trust boundaries, **not dependencies** | **fail build** | Static + behavioural/CI |
 | 38 | Linking a Gmail already bound to another account | 409 `identity_in_use`, no second account created | Integration |
 | 39 | Client submits a forged/unverified Google ID token | rejected (server-side verification) | Security |
 | 40 | Guest one-tap on a fresh device | account created, `is_guest=true`, session issued | E2E |
@@ -1120,7 +1125,12 @@ Hard-coded colours 0 · states ≥ 4 per screen · Myanmar clipping 0 and Zawgyi
 | 42 | Guest creation during device cooldown | 429 `device_cooldown` with remaining days | Unit |
 | 43 | Connect Gmail while offline | action visibly disabled with reason copy | UI/E2E |
 | 44 | After Connect Gmail, purchase flow | entitlement attachable, `is_guest=false` | Integration |
-| 45 | Word "nexus" anywhere in build artefacts/source | 0 matches | Static/CI |
+| 45 | Legacy product name anywhere in shipped code or build artefacts | 0 matches. **Docs that exist to perform the rename may be excluded only by explicit file allowlist** (`docs/**` spec + ADR + copy-review files, and nothing else); `apps/**`, `infra/**`, `design/**`, `tools/**` may never be added to the allowlist, and the allowlist itself must be asserted by a test | Static/CI |
+| 46 | Refresh token replayed from a **different device binding** | `401` + whole token family revoked (refresh is device-bound) | Security |
+| 47 | `docs/api/openapi.*` has a breaking change vs the previous tag | build fails (`spectral` lint + breaking-change diff; JSON or YAML both accepted) | Static/CI |
+| 48 | Local `docker-compose.yml` database is not **PostgreSQL major 16** | CI/static gate fails (local Postgres 18 vs CI 16 drift is a real defect source). **`postgres:16.x` and `postgis/postgis:16-3.4` both satisfy this gate — the gate pins the major version, it does not ban PostGIS.** Dropping PostGIS to satisfy T48 is a gate misreading, not a fix | Static/CI |
+| 49 | A store-upload job (Play track / TestFlight) runs on a tag that does not match `^v1\.` | CI job fails closed (§0.1 Tag rule) | Static/CI |
+| 50 | Config value resolution order is wrong, or a remote-config fetch failure blocks startup | must resolve **remote > env > code default**, fall back silently with a single warning log, and never block boot | Unit |
 
 ### 16.2 Core product tests (T1–T19)
 
@@ -1222,7 +1232,7 @@ hasta-app/
 ## 18. Deployment, CI/CD, Operations
 
 ### 18.1 Environments
-`development` (local Docker Compose per developer) · `staging` (production-like infra, QA/UAT) · `production`. Separate DB, secrets, and domain per environment; config drift minimised; **staging must be able to run the full test matrix including store sandbox** (Apple StoreKit testing, Google Play licence testing).
+`development` (local Docker Compose per developer, **database image pinned to `postgres:16` to match RDS and CI — no Postgres 18 locally**, gate T48) · `staging` (production-like infra, QA/UAT) · `production`. Separate DB, secrets, and domain per environment; config drift minimised; **staging must be able to run the full test matrix including store sandbox** (Apple StoreKit testing, Google Play licence testing).
 
 ### 18.2 CI pipeline (per PR)
 lint → unit tests → integration tests (Testcontainers) → SAST + dependency scan + secret scan → static gates (**T20, T36, T37, T45**) → build (Docker image tagged with commit SHA; APK/IPA debug) → DS token check (generated file matches JSON; zero hard-coded hex).
@@ -1302,6 +1312,8 @@ Access in test builds: welcome screen → long-press logo 3 s → `Quick test ac
 | 20.8 | Apple identity link UI | **Deferred to v1.1** (schema and endpoints ready, flag off) | PO |
 | 20.9 | Voice/video call | **v1.1** | PO |
 | 20.10 | Myanmar numerals default | Assumed off (Arabic default) per DS | Design |
+| 20.11 | **Remote-config source** | PR #2 ships a config indirection with no live source — values are code/env overridable only. Accepted, conditional: the live poller must land **no later than Sprint 4** and must cover every `[PROPOSAL]` key that ships from Sprint 5 onward (feed weights, opener limit, dormant window, Super Like/Undo caps, all four TTL/rate keys). Until then, no `[PROPOSAL]` value may be described as tunable in the field. Gate T50 defines the required behaviour | PO + DevOps |
+| 20.12 | Legacy-named cloud project (Supabase, paused) | Agent cannot rename or delete it — this is a **manual owner action**, not sprint work. ADR-0007 records the decision and the project stays paused and unreferenced. Not a code dependency; rename to `hasta-legacy-archive` or delete when the owner has time | PO (manual) |
 
 **Assumptions the agent must not silently change:** no phone/OTP anywhere; no Google *sign-in* in v1; guest is a first-class production path (not only a dev hack); dating data is never visible to social surfaces; all retention numbers above are proposals pending legal sign-off, not legal advice.
 
@@ -1343,4 +1355,25 @@ For every feature deliver:
 
 ---
 
-_End of Hasta v1.0.0 Master PRD (SPEC 1.0.0)._
+## 22. Change log
+
+| Spec | Date | Change | Why |
+| --- | --- | --- | --- |
+| 1.0.0 | 2026-11-23 | Initial consolidated spec (5 source docs merged, Nexus → Hasta, guest-first auth) | handoff to coding agent |
+| **1.0.1** | 2026-11-23 | §14.1 adds `bg.brand` / `bg.brandPressed` / `bg.brandDisabled` fill tokens (measured: `#FFFFFF` on `#4C5EF6` = **4.95:1**, on `#3D4EE0` = **6.24:1**) | Sprint 1 ADR-0005: DS v1.0 had no brand *fill* token, so the primary button borrowed `text.link` — a real spec gap, now closed |
+| 1.0.1 | 2026-11-23 | §16 T37 reworded to target **sign-in routes and trust boundaries**, explicitly permitting the Google auth library inside `modules/identity` | Sprint 1 gate as written blocked `google-auth-library`, which Sprint 2 requires for server-side ID-token verification |
+| 1.0.1 | 2026-11-23 | New gates **T46** (device-bound refresh token, family revoke on cross-device replay), **T47** (OpenAPI breaking-change gate), **T48** (local Postgres pinned to 16) | Sprint 1 shipped refresh 30 d / device token 365 d, exported `openapi.json`, and ran local Postgres 18 vs CI 16 |
+| 1.0.1 | 2026-11-23 | §5.3 refresh token bound to `(account_id, device_hash)`; Sprint 1 TTLs accepted as `[PROPOSAL]` remote-config values | closes the stolen-token gap without changing UX |
+| 1.0.1 | 2026-11-23 | Myanmar line-height floor **1.65× confirmed to override the §14.2 table for Myanmar text at every size** (incl. `display`, `h1`); Latin-only UI may use 1.35× | Sprint 1 raised `display`/`h1` to 1.65 — accepted, and the ambiguity between §4.2/§14.2 and the Myanmar rule is resolved in favour of the floor |
+| 1.0.1 | 2026-11-23 | Accepted Sprint 1 deviations logged: Prisma as the locked ORM (spec already offered the choice), `profiles.field_hlc`, idempotency keyed by scope for pre-auth token endpoints, `sessions.revoked_reason` / `last_seen_at`, native device-id channel, `path_provider` for Drift | see §20 for what stays open |
+| 1.0.1 | 2026-11-23 | New hard gate: background outbox drain (WorkManager / BGTaskScheduler) **must land by Sprint 3**, not Sprint 8 | until then the "offline-first" promise is only partly true — the outbox drains only while the app is open |
+| **1.0.2** | 2026-11-23 | T48 reworded: the gate pins **PostgreSQL major 16**, and `postgis/postgis:16-3.4` satisfies it | PR #2 satisfied T48 by replacing PostGIS with plain `postgres:16.16`. That was the gate's wording, not the agent's judgement — `dating_profiles.location geometry(Point,4326)` + the GiST index in §13 cannot build without the extension, so this had to be corrected at the source |
+| 1.0.2 | 2026-11-23 | T45 exclusions narrowed to an explicit **file allowlist**; `apps/**`, `infra/**`, `design/**`, `tools/**` may never be excluded; the allowlist itself needs a test | PR #2 fixed failing main CI by adding "T45 exclusions" — right outcome, needs a bound so the exclusion cannot widen into the shipped surface |
+| 1.0.2 | 2026-11-23 | New gates **T49** (store-upload job fails closed on a non-`v1.` tag) and **T50** (remote > env > code default, fetch failure must not block boot) | repo is tagged `v0.1.0`; and four `[PROPOSAL]` values have a config indirection but no live source until Sprint 4 |
+| 1.0.2 | 2026-11-23 | §0.1 Tag rule added — `0.x` internal tags allowed pre-launch, never on a store track | reconciles `v0.1.0` with the fixed `1.0.0 / build 1` store version |
+| 1.0.2 | 2026-11-23 | `bg.brandDisabled` = **40% opacity in both themes**; DS JSON declared the single source of truth for token values, PRD mirrors it | PR #2 ADR-0006 open question: JSON said 40%, PRD said 30%. The agent followed the machine-readable file — correct behaviour; the prose was the wrong one |
+| 1.0.2 | 2026-11-23 | Zawgyi interim rule accepted: server rejects with `zawgyi_detected` and stores nothing, behind a flag, removed when convert-on-write lands in Sprint 3; the rejection copy must be Myanmar and tell the user to switch to Unicode | PR #2 shipped a reject stub ahead of schedule. Safer than storing mixed encodings, but a hard reject left in place would lock out Zawgyi keyboards |
+
+---
+
+_End of Hasta v1.0.0 Master PRD (SPEC 1.0.1)._
