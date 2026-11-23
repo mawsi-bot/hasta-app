@@ -1,0 +1,42 @@
+name: hasta
+description: Hasta v1.0.0 — social feed, chat and dating for Myanmar.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.5.0 <4.0.0"
+  flutter: 3.24.5
+
+# Locked stack (SPEC §11). Exact pins; any addition needs an ADR in docs/ADR/.
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: 0.19.0
+  flutter_riverpod: 2.5.1
+  drift: 2.20.3
+  sqlite3_flutter_libs: 0.5.24
+  path_provider: 2.1.4
+  path: 1.9.0
+  dio: 5.6.0
+  flutter_secure_storage: 9.2.2
+  connectivity_plus: 6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: 4.0.0
+  build_runner: 2.4.12
+  drift_dev: 2.20.3
+
+flutter:
+  uses-material-design: true
+  generate: true
+  fonts:
+    - family: NotoSansMyanmar
+      fonts:
+        - asset: assets/fonts/NotoSansMyanmar-Variable.ttf
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Variable.ttf
