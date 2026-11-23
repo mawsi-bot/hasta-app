@@ -74,5 +74,7 @@
   "gmailLinkFailed": "Failed. Please try again ({code})",
   "gmailIdentityInUse": "This Gmail is already linked to another account. Try a different Gmail.",
   "gmailEmailUnverified": "This Gmail is not verified with Google. Verify it, then try again.",
-  "gmailLinkCancelled": "Gmail linking was cancelled."
+  "gmailLinkCancelled": "Gmail linking was cancelled.",
+  "gmailUnlink": "Unlink Gmail",
+  "gmailUnlinkBlocked": "You can unlink only if another recovery method exists"
 }

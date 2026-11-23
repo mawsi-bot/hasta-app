@@ -134,6 +134,20 @@ void main() {
       await h.dispose(tester);
     });
   }
+
+  testWidgets('linked from /v1/me; unlink blocked → 409 copy, identity still shown', (WidgetTester tester) async {
+    final (Harness h, _) = await openSheet(tester, identities: <Map<String, dynamic>>[
+      <String, dynamic>{'provider': 'google', 'email_masked': 'h***@gmail.com', 'linked_at': '2026-11-23T00:00:00.000Z'},
+    ]);
+    h.api.on('DELETE', kIdentity, (_) => FakeResponse.error(409, 'recovery_required'));
+    expect(find.text('ချိတ်ဆက်ပြီး — h***@gmail.com'), findsOneWidget);
+    await tester.tap(find.byKey(LinkedAccountsSheet.unlinkKey));
+    await h.settle(tester);
+    expect(h.api.calls('DELETE', kIdentity), hasLength(1));
+    expect(find.text('Recovery နည်းလမ်း တစ်ခု ရှိမှသာ ဖြုတ်နိုင်သည်'), findsOneWidget);
+    expect(find.text('ချိတ်ဆက်ပြီး — h***@gmail.com'), findsOneWidget);
+    await h.dispose(tester);
+  });
 }
 
 /// Myanmar values of the PENDING-COPY keys, read from the ARB so the test does not duplicate copy.

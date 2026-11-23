@@ -22,12 +22,13 @@ enum _Phase { loading, ready, linking, error }
 
 /// Settings → Account → Linked accounts (SPEC 1.0.2 §5.4, DS stateMatrix `linkedAccountsGmail`).
 /// States: loading (spinner), empty (not linked + Connect), error (formula + Retry = fresh link:start),
-/// offline (Connect disabled with reason, T43), permissionDenied (cancel notice), plus linked (server mask).
+/// offline (Connect disabled with reason, T43), permissionDenied (cancel notice), plus linked / unlink blocked.
 /// Height grows with content (min-height only) so 200 % Myanmar text never clips.
 class LinkedAccountsSheet extends ConsumerStatefulWidget {
   const LinkedAccountsSheet({super.key});
 
   static const Key connectKey = Key('gmail-connect');
+  static const Key unlinkKey = Key('gmail-unlink');
   static const Key retryKey = Key('gmail-retry');
   static const Key cancelledKey = Key('gmail-cancelled');
 
@@ -40,6 +41,7 @@ class _LinkedAccountsSheetState extends ConsumerState<LinkedAccountsSheet> {
   GoogleLink? _link;
   ApiFailure? _failure;
   bool _cancelled = false;
+  bool _unlinkBlocked = false;
   VoidCallback _retry = () {};
 
   IdentityRepository get _repo => ref.read(identityRepositoryProvider);
@@ -64,6 +66,7 @@ class _LinkedAccountsSheetState extends ConsumerState<LinkedAccountsSheet> {
     setState(() {
       _link = link;
       _cancelled = cancelled;
+      _unlinkBlocked = false;
       _phase = _Phase.ready;
     });
   }
@@ -96,6 +99,16 @@ class _LinkedAccountsSheetState extends ConsumerState<LinkedAccountsSheet> {
     }
   }
 
+  Future<void> _unlink() async {
+    try {
+      await _repo.unlink();
+      _ready();
+    } on ApiFailure catch (f) {
+      if (f.code != 'recovery_required') return _fail(f, _unlink);
+      if (mounted) setState(() => _unlinkBlocked = true);
+    }
+  }
+
   String _errorCopy(AppLocalizations l, ApiFailure f) => switch (f.code) {
         'identity_in_use' => l.gmailIdentityInUse,
         'google_email_unverified' => l.gmailEmailUnverified,
@@ -115,6 +128,9 @@ class _LinkedAccountsSheetState extends ConsumerState<LinkedAccountsSheet> {
         ],
       _ when _link != null => <Widget>[
           Text(l.gmailLinkedMasked(_link!.emailMasked ?? ''), style: body(c.textPrimary)),
+          if (_unlinkBlocked) Text(l.gmailUnlinkBlocked, style: body(c.textDanger)),
+          HastaButton(key: LinkedAccountsSheet.unlinkKey, label: l.gmailUnlink, variant: HastaButtonVariant.secondary,
+              onPressed: online ? _unlink : null),
         ],
       _ => <Widget>[
           Text(l.gmailNotLinked, style: body(c.textPrimary)),

@@ -319,5 +319,13 @@
   "gmailLinkCancelled": "Gmail ချိတ်ဆက်ခြင်းကို ပယ်ဖျက်လိုက်သည်။",
   "@gmailLinkCancelled": {
     "description": "[PENDING-COPY] DS stateMatrix linkedAccountsGmail.permissionDenied"
+  },
+  "gmailUnlink": "Gmail ဖြုတ်ရန်",
+  "@gmailUnlink": {
+    "description": "[PENDING-COPY] SPEC §5.4 unlink action"
+  },
+  "gmailUnlinkBlocked": "Recovery နည်းလမ်း တစ်ခု ရှိမှသာ ဖြုတ်နိုင်သည်",
+  "@gmailUnlinkBlocked": {
+    "description": "SPEC §5.4 unlink blocked (normative)"
   }
 }

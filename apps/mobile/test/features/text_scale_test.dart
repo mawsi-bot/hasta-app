@@ -78,7 +78,7 @@ void main() {
       await h.settle(tester);
       unawaited(showLinkedAccountsSheet(tester.element(find.byType(Navigator).first)));
       await h.settle(tester);
-      expect(find.byKey(LinkedAccountsSheet.connectKey), linked ? findsNothing : findsOneWidget);
+      expect(find.byKey(linked ? LinkedAccountsSheet.unlinkKey : LinkedAccountsSheet.connectKey), findsOneWidget);
       expect(tester.takeException(), isNull);
       expectNoClipping(tester, find.byType(LinkedAccountsSheet));
       await h.dispose(tester);
