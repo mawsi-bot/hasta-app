@@ -1,0 +1,775 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/v1/health": {
+      "get": {
+        "operationId": "HealthController_health",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/auth/device/register": {
+      "post": {
+        "operationId": "AuthController_register",
+        "summary": "Register device; returns HMAC device hash + device token (raw id never stored)",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterDeviceResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "rate_limited"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/guest": {
+      "post": {
+        "operationId": "AuthController_guest",
+        "summary": "One-tap guest: create or resume the account bound to this device",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GuestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "device_cooldown (details.retry_after_days) or rate_limited"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "operationId": "AuthController_refresh",
+        "summary": "Rotate refresh token (reuse ⇒ family revoked)",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenPairResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "unauthenticated (details.reason=reuse_detected on reuse)"
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "operationId": "AuthController_logout",
+        "summary": "Sign out this device (or everywhere). Guest binding is kept, so Continue resumes.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "auth"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "operationId": "MeController_me",
+        "summary": "Own account, profile, linked identities (masked), entitlements, flags",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "me"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/profile": {
+      "get": {
+        "operationId": "MeController_getProfile",
+        "summary": "Own profile",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileView"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "me"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "patch": {
+        "operationId": "MeController_patchProfile",
+        "summary": "Update own profile (field-level HLC LWW merge)",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PatchProfileResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "username_taken"
+          }
+        },
+        "tags": [
+          "me"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Hasta API",
+    "description": "Hasta v1.0.0 — guest-first identity. No OTP/SMS, no Google/Apple sign-in (linking only).",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "RegisterDeviceDto": {
+        "type": "object",
+        "properties": {
+          "raw_device_id": {
+            "type": "string",
+            "description": "Android ID / iOS identifierForVendor. Sent once over TLS, never persisted.",
+            "example": "a1b2c3d4e5f60718"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "android",
+              "ios"
+            ]
+          },
+          "app_version": {
+            "type": "string",
+            "example": "1.0.0"
+          },
+          "os_version": {
+            "type": "string",
+            "example": "14"
+          }
+        },
+        "required": [
+          "raw_device_id",
+          "platform",
+          "app_version"
+        ]
+      },
+      "RegisterDeviceResponse": {
+        "type": "object",
+        "properties": {
+          "device_hash": {
+            "type": "string"
+          },
+          "device_token": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "android",
+              "ios"
+            ]
+          },
+          "registered_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "device_hash",
+          "device_token",
+          "platform",
+          "registered_at"
+        ]
+      },
+      "GuestDto": {
+        "type": "object",
+        "properties": {
+          "device_token": {
+            "type": "string"
+          },
+          "locale": {
+            "type": "string",
+            "enum": [
+              "my",
+              "en"
+            ]
+          }
+        },
+        "required": [
+          "device_token"
+        ]
+      },
+      "AccountView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "deleted",
+              "banned"
+            ]
+          },
+          "is_guest": {
+            "type": "boolean"
+          },
+          "display_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "is_guest",
+          "display_name",
+          "username",
+          "created_at"
+        ]
+      },
+      "DeviceBindingView": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "primary",
+              "secondary"
+            ]
+          },
+          "device_hash": {
+            "type": "string"
+          },
+          "bound_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "role",
+          "device_hash",
+          "bound_at"
+        ]
+      },
+      "SessionResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "number",
+            "example": 900
+          },
+          "account": {
+            "$ref": "#/components/schemas/AccountView"
+          },
+          "device_binding": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeviceBindingView"
+              }
+            ]
+          },
+          "is_new_account": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in",
+          "account",
+          "device_binding",
+          "is_new_account"
+        ]
+      },
+      "RefreshDto": {
+        "type": "object",
+        "properties": {
+          "refresh_token": {
+            "type": "string"
+          },
+          "device_token": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "refresh_token",
+          "device_token"
+        ]
+      },
+      "TokenPairResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "refresh_token": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "number",
+            "example": 900
+          }
+        },
+        "required": [
+          "access_token",
+          "refresh_token",
+          "expires_in"
+        ]
+      },
+      "LogoutDto": {
+        "type": "object",
+        "properties": {
+          "device_token": {
+            "type": "string"
+          },
+          "everywhere": {
+            "type": "boolean",
+            "default": false
+          }
+        },
+        "required": [
+          "device_token"
+        ]
+      },
+      "MeAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "is_guest": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "is_guest",
+          "created_at"
+        ]
+      },
+      "ProfileView": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "nullable": true
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "bio": {
+            "type": "string",
+            "nullable": true
+          },
+          "avatar_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "birth_date": {
+            "type": "string",
+            "nullable": true
+          },
+          "updated_hlc": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "display_name",
+          "username",
+          "bio",
+          "avatar_url",
+          "birth_date",
+          "updated_hlc"
+        ]
+      },
+      "IdentityView": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "type": "string",
+            "enum": [
+              "google",
+              "apple"
+            ]
+          },
+          "email_masked": {
+            "type": "string",
+            "nullable": true
+          },
+          "linked_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "email_masked",
+          "linked_at"
+        ]
+      },
+      "EntitlementView": {
+        "type": "object",
+        "properties": {
+          "store": {
+            "type": "string",
+            "enum": [
+              "apple",
+              "google"
+            ]
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "expired",
+              "revoked",
+              "pending",
+              "grace"
+            ]
+          },
+          "expires_at": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "store",
+          "product_id",
+          "status",
+          "expires_at"
+        ]
+      },
+      "MeFlags": {
+        "type": "object",
+        "properties": {
+          "dating_enabled": {
+            "type": "boolean"
+          },
+          "dating_paused": {
+            "type": "boolean"
+          },
+          "premium": {
+            "type": "boolean"
+          },
+          "test_mode_panel": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "dating_enabled",
+          "dating_paused",
+          "premium",
+          "test_mode_panel"
+        ]
+      },
+      "MeResponse": {
+        "type": "object",
+        "properties": {
+          "account": {
+            "$ref": "#/components/schemas/MeAccount"
+          },
+          "profile": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProfileView"
+              }
+            ]
+          },
+          "identities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IdentityView"
+            }
+          },
+          "entitlements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EntitlementView"
+            }
+          },
+          "flags": {
+            "$ref": "#/components/schemas/MeFlags"
+          }
+        },
+        "required": [
+          "account",
+          "profile",
+          "identities",
+          "entitlements",
+          "flags"
+        ]
+      },
+      "PatchProfileDto": {
+        "type": "object",
+        "properties": {
+          "display_name": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "username": {
+            "type": "string",
+            "pattern": "^[a-z0-9._]{3,32}$"
+          },
+          "bio": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "birth_date": {
+            "type": "string",
+            "example": "1998-04-02"
+          },
+          "hlc": {
+            "type": "string",
+            "description": "Client HLC (decimal string, (ms<<16)|counter) for field-level LWW"
+          }
+        },
+        "required": [
+          "hlc"
+        ]
+      },
+      "PatchProfileResponse": {
+        "type": "object",
+        "properties": {
+          "profile": {
+            "$ref": "#/components/schemas/ProfileView"
+          },
+          "applied": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ignored": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "profile",
+          "applied",
+          "ignored"
+        ]
+      }
+    }
+  }
+}
