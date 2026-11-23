@@ -1,5 +1,5 @@
 // GENERATED CODE — DO NOT EDIT BY HAND.
-// Source: design/hasta-ds-1.0.0.json (DS 1.0.0 v1.0.0)
+// Source: design/hasta-ds-1.0.1.json (DS 1.0.1 v1.0.0)
 // Regenerate: node tools/scripts/generate-tokens.mjs
 // ignore_for_file: public_member_api_docs, constant_identifier_names
 
@@ -15,6 +15,9 @@ class HastaColors extends ThemeExtension<HastaColors> {
     required this.bgSunken,
     required this.bgOverlay,
     required this.bgBrandSubtle,
+    required this.bgBrand,
+    required this.bgBrandPressed,
+    required this.bgBrandDisabled,
     required this.bgDangerSubtle,
     required this.bgDatingSubtle,
     required this.textPrimary,
@@ -49,6 +52,12 @@ class HastaColors extends ThemeExtension<HastaColors> {
   final Color bgOverlay;
   /// bg.brandSubtle — selected row, mention
   final Color bgBrandSubtle;
+  /// bg.brand — PRIMARY button / brand fill — new in 1.0.1, replaces the text.link workaround (ADR-0005)
+  final Color bgBrand;
+  /// bg.brandPressed — pressed primary (scale .98)
+  final Color bgBrandPressed;
+  /// bg.brandDisabled — disabled primary
+  final Color bgBrandDisabled;
   /// bg.dangerSubtle — destructive background
   final Color bgDangerSubtle;
   /// bg.datingSubtle — dating mode surface
@@ -97,6 +106,9 @@ class HastaColors extends ThemeExtension<HastaColors> {
     bgSunken: Color(0xFFEEF1F6),
     bgOverlay: Color(0x8F111827),
     bgBrandSubtle: Color(0xFFEAF1FE),
+    bgBrand: Color(0xFF4C5EF6),
+    bgBrandPressed: Color(0xFF3D4EE0),
+    bgBrandDisabled: Color(0x66B9C2FF),
     bgDangerSubtle: Color(0xFFFDECEC),
     bgDatingSubtle: Color(0xFFFDECF1),
     textPrimary: Color(0xFF111827),
@@ -126,6 +138,9 @@ class HastaColors extends ThemeExtension<HastaColors> {
     bgSunken: Color(0xFF0A1219),
     bgOverlay: Color(0xA3000000),
     bgBrandSubtle: Color(0xFF16243D),
+    bgBrand: Color(0xFF4C8DFF),
+    bgBrandPressed: Color(0xFF7C8BFF),
+    bgBrandDisabled: Color(0x664C8DFF),
     bgDangerSubtle: Color(0xFF2A1518),
     bgDatingSubtle: Color(0xFF2A1620),
     textPrimary: Color(0xFFE8EDF4),
@@ -155,6 +170,9 @@ class HastaColors extends ThemeExtension<HastaColors> {
     bgSunken: Color(0xFF000000),
     bgOverlay: Color(0xA3000000),
     bgBrandSubtle: Color(0xFF16243D),
+    bgBrand: Color(0xFF4C8DFF),
+    bgBrandPressed: Color(0xFF7C8BFF),
+    bgBrandDisabled: Color(0x664C8DFF),
     bgDangerSubtle: Color(0xFF2A1518),
     bgDatingSubtle: Color(0xFF2A1620),
     textPrimary: Color(0xFFE8EDF4),
@@ -190,6 +208,9 @@ class HastaColors extends ThemeExtension<HastaColors> {
       bgSunken: Color.lerp(bgSunken, other.bgSunken, t)!,
       bgOverlay: Color.lerp(bgOverlay, other.bgOverlay, t)!,
       bgBrandSubtle: Color.lerp(bgBrandSubtle, other.bgBrandSubtle, t)!,
+      bgBrand: Color.lerp(bgBrand, other.bgBrand, t)!,
+      bgBrandPressed: Color.lerp(bgBrandPressed, other.bgBrandPressed, t)!,
+      bgBrandDisabled: Color.lerp(bgBrandDisabled, other.bgBrandDisabled, t)!,
       bgDangerSubtle: Color.lerp(bgDangerSubtle, other.bgDangerSubtle, t)!,
       bgDatingSubtle: Color.lerp(bgDatingSubtle, other.bgDatingSubtle, t)!,
       textPrimary: Color.lerp(textPrimary, other.textPrimary, t)!,

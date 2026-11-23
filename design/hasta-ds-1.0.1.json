@@ -5,7 +5,6 @@
     "version": "1.0.0",
     "designSystem": "DS 1.0.1",
     "patch1_0_1": ["added bg.brand / bg.brandPressed / bg.brandDisabled fill tokens (primary button no longer borrows text.link)", "confirmed Myanmar line-height floor 1.65x overrides the type-scale table at every size", "measured contrast values added under contrast.measured"],
-    "renamedFrom": "Nexus",
     "themes": ["light", "dark", "amoled", "highContrast", "dataSaver"],
     "defaultTheme": "light",
     "rule": "Components MUST reference semantic tokens only. Hard-coded hex in component code is a CI failure."

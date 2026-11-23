@@ -11,7 +11,7 @@ abstract final class HastaTheme {
   static ThemeData _build(HastaColors c, Brightness b) {
     final ColorScheme scheme = ColorScheme(
       brightness: b,
-      primary: c.actionPrimary,
+      primary: c.bgBrand,
       onPrimary: c.textOnBrand,
       secondary: c.accentCommunity,
       onSecondary: c.textOnBrand,
@@ -96,12 +96,6 @@ abstract final class HastaTheme {
       ),
     );
   }
-}
-
-extension HastaColorsX on HastaColors {
-  /// Filled primary action. DS 1.0.0 defines no `bg.brand` semantic token, so the
-  /// brand blue is taken from `text.link` (same raw `blue.500`). [DEVIATION] logged.
-  Color get actionPrimary => textLink;
 }
 
 extension HastaContext on BuildContext {

@@ -8,7 +8,7 @@ import 'package:hasta/core/design/tokens.dart';
 /// DS + Myanmar-first rules (SKILL rules 7–8, DS qaGate).
 void main() {
   final Map<String, dynamic> ds =
-      jsonDecode(File('../../design/hasta-ds-1.0.0.json').readAsStringSync()) as Map<String, dynamic>;
+      jsonDecode(File('../../design/hasta-ds-1.0.1.json').readAsStringSync()) as Map<String, dynamic>;
   final Map<String, dynamic> my = jsonDecode(File('lib/l10n/app_my.arb').readAsStringSync()) as Map<String, dynamic>;
   final Map<String, dynamic> en = jsonDecode(File('lib/l10n/app_en.arb').readAsStringSync()) as Map<String, dynamic>;
 
