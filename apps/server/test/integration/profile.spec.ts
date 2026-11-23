@@ -78,4 +78,11 @@ describe('profile basics (GET/PATCH /v1/profile)', () => {
     const res = await patch({ is_guest: false, hlc: hlc(1) });
     expect(res.status).toBe(400);
   });
+
+  it('Zawgyi input is rejected, never stored (detect stub)', async () => {
+    const res = await patch({ bio: 'ေက်ာင္း', hlc: hlc(5000) });
+    expect(res.status).toBe(400);
+    expect(res.body.error.details).toEqual({ bio: 'zawgyi_detected' });
+    expect(await ctx.prisma.profile.count({ where: { bio: 'ေက်ာင္း' } })).toBe(0);
+  });
 });

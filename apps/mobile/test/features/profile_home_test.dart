@@ -111,4 +111,19 @@ void main() {
     expect(h.api.calls('PATCH', '/v1/profile'), isEmpty);
     await h.dispose(tester);
   });
+
+  testWidgets('Zawgyi input is blocked before Drift/outbox (detect stub)', (WidgetTester tester) async {
+    final Harness h = await signedInHarness(tester);
+    await h.pumpApp(tester);
+    await tester.tap(find.text('ပရိုဖိုင်'));
+    await h.settle(tester);
+    await tester.tap(find.byKey(const Key('edit-profile')));
+    await h.settle(tester);
+    await tester.enterText(find.byKey(const Key('field-bio')), '\u1031\u1000\u103a\u102c\u1004\u1039\u1038');
+    await tester.tap(find.byKey(const Key('save-profile')));
+    await h.settle(tester);
+    expect(find.text('ဇော်ဂျီ စာသားကို လက်မခံပါ။ ယူနီကုဒ်ဖြင့် ရိုက်ထည့်ပါ။'), findsOneWidget);
+    expect(await h.db.select(h.db.outboxEntries).get(), isEmpty);
+    await h.dispose(tester);
+  });
 }
