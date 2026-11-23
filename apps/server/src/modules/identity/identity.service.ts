@@ -18,6 +18,7 @@ import type { LinkCompleteResponse, LinkStartResponse } from './dto/link.dto';
 const STATE_TTL_S = 300; // SPEC 1.0.2 §5.4: link state lives 5 minutes, single use
 const AUTH_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth';
 const SCOPES = ['openid', 'email', 'profile'];
+const RECOVERY_PROVIDERS = ['google', 'apple'];
 export const UNLOCKED = ['premium_purchase', 'restore_purchases', 'device_recovery'];
 
 interface LinkState { account_id: string; device_hash: string; nonce: string; verifier: string }
@@ -88,5 +89,23 @@ export class IdentityService {
       }
       throw e;
     }
+  }
+
+  /** SPEC §5.5: an account may never lose its last recovery method. */
+  async unlink(auth: AuthContext): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const ids = await tx.identity.findMany({ where: { accountId: auth.accountId, provider: { in: RECOVERY_PROVIDERS } }, select: { provider: true } });
+      if (!ids.some((i) => i.provider === 'google')) return; // already unlinked — idempotent no-op
+      if (ids.length < 2) throw new ApiError(409, 'recovery_required', 'identity.recoveryRequired');
+      await tx.identity.deleteMany({ where: { accountId: auth.accountId, provider: 'google' } });
+    });
+    log.info('identity_unlinked', { account_id: auth.accountId, provider: 'google' });
+  }
+
+  /** Google redirects the browser here; hand code + state to the app's custom scheme (API §1.6). */
+  callbackTarget(q: Record<string, unknown>): string {
+    const out = new URLSearchParams();
+    for (const k of ['code', 'error', 'state']) if (typeof q[k] === 'string' && (q[k] as string).length <= 2048) out.set(k, q[k] as string);
+    return `hasta://link/google?${out.toString()}`;
   }
 }

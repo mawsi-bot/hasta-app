@@ -1,5 +1,7 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, Post, Query, Res } from '@nestjs/common';
 import { ApiBearerAuth, ApiHeader, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import type { Response } from 'express';
+import { Public } from '../../common/auth/public.decorator';
 import { CurrentAuth } from '../../common/auth/current-auth.decorator';
 import type { AuthContext } from '../../common/auth/auth-context';
 import { Idempotent, IdempotentByDesign } from '../../common/idempotency/idempotency.decorator';
@@ -7,8 +9,8 @@ import { IdentityService } from './identity.service';
 import { LinkCompleteDto, LinkCompleteResponse, LinkStartResponse } from './dto/link.dto';
 
 /**
- * Gmail LINKING after guest login (SPEC 1.0.2 §5.4). This is not a sign-in: every route needs an
- * existing session. `\\:` escapes the AIP-136 custom-method colon for Express.
+ * Gmail LINKING after guest login (SPEC 1.0.2 §5.4). This is not a sign-in: every route except the
+ * browser callback needs an existing session. `\\:` escapes the AIP-136 custom-method colon for Express.
  */
 @ApiTags('identity')
 @ApiBearerAuth()
@@ -37,5 +39,24 @@ export class IdentityController {
   @ApiResponse({ status: 422, description: 'google_email_unverified' })
   complete(@CurrentAuth() auth: AuthContext, @Body() dto: LinkCompleteDto): Promise<LinkCompleteResponse> {
     return this.identities.complete(auth, dto.state, dto.code);
+  }
+
+  @Delete()
+  @HttpCode(204)
+  @IdempotentByDesign('unlinking an already-unlinked identity is a no-op')
+  @ApiHeader({ name: 'Idempotency-Key', required: false, description: 'UUIDv7' })
+  @ApiOperation({ summary: 'Unlink Gmail (blocked when it is the only recovery method)' })
+  @ApiResponse({ status: 204, description: 'unlinked' })
+  @ApiResponse({ status: 409, description: 'recovery_required' })
+  async unlink(@CurrentAuth() auth: AuthContext): Promise<void> {
+    await this.identities.unlink(auth);
+  }
+
+  @Public()
+  @Get('link\\:callback')
+  @ApiOperation({ summary: 'OAuth redirect target: 302 to hasta://link/google with code + state' })
+  @ApiResponse({ status: 302, description: 'redirect to the app scheme' })
+  callback(@Query() q: Record<string, unknown>, @Res() res: Response): void {
+    res.redirect(302, this.identities.callbackTarget(q));
   }
 }

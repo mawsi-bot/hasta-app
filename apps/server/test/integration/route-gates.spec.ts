@@ -50,6 +50,8 @@ describe('route static gates on the live app', () => {
         'GET /v1/profile',
         'GET /v1/test/accounts',
         'PATCH /v1/profile',
+        'DELETE /v1/auth/identities/google',
+        'GET /v1/auth/identities/google/link:callback',
         'POST /v1/auth/device/register',
         'POST /v1/auth/identities/google/link:complete',
         'POST /v1/auth/identities/google/link:start',
