@@ -1,0 +1,29 @@
+name: mobile-release-check
+on:
+  pull_request:
+    paths: ["apps/mobile/**", ".github/workflows/mobile.yml"]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  android-release:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: 3.24.5, channel: stable, cache: true }
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Build release APK with production defines
+        run: flutter build apk --release --dart-define-from-file=dart_defines/production.json
+      - name: T36 — quick-test panel absent from release binary
+        run: |
+          mkdir -p /tmp/apk && cd /tmp/apk && unzip -o -q "$GITHUB_WORKSPACE/apps/mobile/build/app/outputs/flutter-apk/app-release.apk"
+          hits=$(find lib -name libapp.so -exec strings {} \; | grep -c hasta-qa-quick-test-panel || true)
+          echo "marker hits: $hits"
+          test "$hits" = "0"
