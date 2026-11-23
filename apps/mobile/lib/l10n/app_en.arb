@@ -67,5 +67,12 @@
   "languageMyanmar": "မြန်မာ",
   "languageEnglish": "English",
   "premiumGuestBlocked": "Connect Gmail to buy Premium.",
-  "zawgyiDetected": "Zawgyi text is not supported. Please type in Unicode."
+  "zawgyiDetected": "Zawgyi text is not supported. Please type in Unicode.",
+  "gmailNotLinked": "Not linked yet",
+  "gmailBenefit": "When linked: (1) recover your account if you change phones (2) buy Premium (3) use Restore Purchases.",
+  "gmailLinkedMasked": "Linked — {email}",
+  "gmailLinkFailed": "Failed. Please try again ({code})",
+  "gmailIdentityInUse": "This Gmail is already linked to another account. Try a different Gmail.",
+  "gmailEmailUnverified": "This Gmail is not verified with Google. Verify it, then try again.",
+  "gmailLinkCancelled": "Gmail linking was cancelled."
 }

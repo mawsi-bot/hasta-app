@@ -38,6 +38,11 @@ void main() {
     };
     map.forEach((String dsKey, String arbKey) => expect(my[arbKey], keys[dsKey], reason: dsKey));
     expect((my['errorGeneric'] as String).replaceAll('{code}', 'E-500'), keys['error.generic']);
+    expect((my['gmailLinkedMasked'] as String).replaceAll('{email}', 'h***@gmail.com'), keys['settings.gmailLinked']);
+    final Map<String, dynamic> gmail = ((ds['stateMatrix'] as Map<String, dynamic>)['screens']
+        as Map<String, dynamic>)['linkedAccountsGmail'] as Map<String, dynamic>;
+    expect(gmail['empty'], startsWith(my['gmailNotLinked'] as String));
+    expect((my['gmailLinkFailed'] as String).replaceAll('({code})', '(E-…)'), gmail['error']);
   });
 
   test('glossary: forbidden transliterations never appear in copy', () {
