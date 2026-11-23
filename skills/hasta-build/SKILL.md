@@ -1,6 +1,6 @@
----
+﻿---
 name: hasta-build
-description: Build, implement, review or extend the Hasta v1.0.0 app (Flutter + NestJS social feed / chat / dating app for the Myanmar market). Use when asked to implement a Hasta sprint, generate Hasta code, DDL, migrations or API endpoints, produce Hasta UI from design tokens, review Hasta code against SPEC 1.0.0, run the Hasta test matrix, or answer Hasta questions about guest-first auth, Gmail account linking, dating rules, offline-first sync, or Myanmar design system. Example triggers: "Hasta Sprint 2 implement လုပ်ပါ", "build Hasta dating match flow", "review this Hasta code against the spec".
+description: "Build, implement, review or extend the Hasta v1.0.0 app (Flutter + NestJS social feed / chat / dating app for the Myanmar market). Use when asked to implement a Hasta sprint, generate Hasta code, DDL, migrations or API endpoints, produce Hasta UI from design tokens, review Hasta code against SPEC 1.0.0, run the Hasta test matrix, or answer Hasta questions about guest-first auth, Gmail account linking, dating rules, offline-first sync, or Myanmar design system. Example triggers: 'Hasta Sprint 2 implement လုပ်ပါ', 'build Hasta dating match flow', 'review this Hasta code against the spec'."
 ---
 
 # Hasta v1.0.0 — Build & Review Skill
@@ -20,12 +20,12 @@ You are the lead full-stack engineering agent for **Hasta** (app `1.0.0` build `
 
 ## Identity & access — locked, never "improve" it
 
-- **No phone OTP, no SMS provider, no phone-number sign-in.** No `/auth/otp*` route may exist.
-- **Sign-in entry is one-tap Guest only.** Welcome screen has a single primary button. **No Google/Apple sign-in button and no sign-in endpoint in v1** — CI fails the build if one appears.
-- **Gmail is linked AFTER login**: `Settings → Account → Linked accounts → Connect Gmail` → OAuth *account linking* (`link:start` / `link:complete`), never authentication. Linking requires `email_verified`, rejects an identity already bound elsewhere (409, no merge), sets `is_guest=false`, and unlocks Premium + restore + device-loss recovery.
-- Device change = QR one-time token (120 s TTL, hashed, single use, old-device biometric confirm, binding moves in one transaction).
-- Premium entitlement binds to `account_id`; receipts verified server-side; guests cannot purchase.
-- Quick test accounts exist only in `dev`/`test`/`beta` builds and must not compile into release builds.
+* **No phone OTP, no SMS provider, no phone-number sign-in.** No `/auth/otp*` route may exist.
+* **Sign-in entry is one-tap Guest only.** Welcome screen has a single primary button. **No Google/Apple sign-in button and no sign-in endpoint in v1** — CI fails the build if one appears.
+* **Gmail is linked AFTER login**: `Settings → Account → Linked accounts → Connect Gmail` → OAuth *account linking* (`link:start` / `link:complete`), never authentication. Linking requires `email_verified`, rejects an identity already bound elsewhere (409, no merge), sets `is_guest=false`, and unlocks Premium + restore + device-loss recovery.
+* Device change = QR one-time token (120 s TTL, hashed, single use, old-device biometric confirm, binding moves in one transaction).
+* Premium entitlement binds to `account_id`; receipts verified server-side; guests cannot purchase.
+* Quick test accounts exist only in `dev`/`test`/`beta` builds and must not compile into release builds.
 
 ## Hard rules
 
