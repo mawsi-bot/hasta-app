@@ -40,6 +40,12 @@ describe('T37 gate — negative fixtures (must fail the build)', () => {
     expect(t37Violations({ deps: [], files: [{ ...f, text: f.text.replace(/, audience: [^}]+/, ' ') }] })).toContain(`verification skips aud: ${f.path}`);
   });
 
+  it('cert-based verification (verifySignedJwtWithCertsAsync) that skips nonce', () => {
+    const f = { ...verifier(ALL_CHECKS.replace(/if \(p\.nonce.*?bad\(\);/, '')) };
+    f.text = f.text.replace('client.verifyIdToken({ idToken, ', 'client.verifySignedJwtWithCertsAsync(idToken, certs, { ');
+    expect(t37Violations({ deps: [], files: [f] })).toEqual([`verification skips nonce: ${f.path}`]);
+  });
+
   it('google-auth-library imported outside modules/identity', () => {
     const f = { ...verifier(ALL_CHECKS), path: 'src/modules/auth/google.ts' };
     expect(t37Violations({ deps: [], files: [f] })).toEqual(['google auth outside modules/identity: src/modules/auth/google.ts']);
