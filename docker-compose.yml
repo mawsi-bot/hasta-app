@@ -1,7 +1,7 @@
 # Local stack. Services reach each other by service name (postgres, redis) — never localhost.
 services:
   postgres:
-    image: postgis/postgis:16-3.4
+    image: postgres:16.16@sha256:3950ad7c3148ca2175ef1b6c36c9efbf78957ae8fbe8b3a5d7c35af50500382f  # T48: pinned; PostGIS lands in Sprint 8
     environment:
       POSTGRES_USER: hasta
       POSTGRES_PASSWORD: CHANGE_ME

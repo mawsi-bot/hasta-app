@@ -10,11 +10,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with: { fetch-depth: 0 } # T47 needs the previous release tag
       - run: sudo apt-get update && sudo apt-get install -y ripgrep
       - uses: actions/setup-node@v4
         with: { node-version: 20 }
-      - name: Static gates (T20, T37, T45, hex)
+      - name: Static gates (T20, T45, T48, hex)
         run: bash tools/ci/static-gates.sh
+      - name: T47 OpenAPI lint + breaking-change diff vs previous tag
+        run: |
+          curl -fsSL https://github.com/oasdiff/oasdiff/releases/download/v1.39.0/oasdiff_1.39.0_linux_amd64.tar.gz | tar xz -C /usr/local/bin oasdiff
+          bash tools/ci/t47-openapi.sh
       - name: Design tokens are generated, not hand-edited
         run: node tools/scripts/generate-tokens.mjs --check
       - uses: hashicorp/setup-terraform@v3
@@ -30,7 +35,7 @@ jobs:
         working-directory: apps/server
     services:
       postgres:
-        image: postgis/postgis:16-3.4
+        image: postgres:16.16@sha256:3950ad7c3148ca2175ef1b6c36c9efbf78957ae8fbe8b3a5d7c35af50500382f  # T48: pinned; PostGIS lands in Sprint 8
         env:
           POSTGRES_USER: hasta
           POSTGRES_PASSWORD: hasta
@@ -62,7 +67,7 @@ jobs:
         run: >-
           npx prisma migrate diff --from-migrations prisma/migrations --to-schema-datamodel prisma/schema.prisma
           --shadow-database-url postgresql://hasta:hasta@127.0.0.1:5432/hasta_shadow --exit-code
-      - name: Unit + static + integration (T20, T36 guard, T37, T40, T41, T42)
+      - name: Unit + static + integration (T20, T36 guard, T37, T40, T41, T42, T46)
         run: npm run test:cov
       - name: OpenAPI is up to date
         run: npm run openapi && git diff --exit-code ../../docs/api/openapi.json
