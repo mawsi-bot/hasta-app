@@ -10,6 +10,9 @@ export type ApiErrorCode =
   | 'token_expired'
   | 'feature_disabled'
   | 'username_taken'
+  | 'identity_in_use'
+  | 'google_email_unverified'
+  | 'recovery_required'
   | 'internal_error';
 
 export class ApiError extends Error {

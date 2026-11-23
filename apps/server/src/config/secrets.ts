@@ -7,12 +7,15 @@ export interface Secrets {
   devicePepper: string;
   jwtAccessSecret: string;
   deviceTokenSecret: string;
+  /** Absent ⇒ the Google code exchange fails closed (401). */
+  googleClientSecret?: string;
 }
 
 const bundle = z.object({
   HASTA_DEVICE_PEPPER: z.string().min(32),
   HASTA_JWT_ACCESS_SECRET: z.string().min(32),
   HASTA_DEVICE_TOKEN_SECRET: z.string().min(32),
+  HASTA_GOOGLE_CLIENT_SECRET: z.string().min(1).optional(),
 });
 
 export type SecretFetcher = (secretId: string, region: string) => Promise<string>;
@@ -37,6 +40,7 @@ export async function loadSecrets(env: Env, fetcher: SecretFetcher = awsSecretFe
       HASTA_DEVICE_PEPPER: env.HASTA_DEVICE_PEPPER,
       HASTA_JWT_ACCESS_SECRET: env.HASTA_JWT_ACCESS_SECRET,
       HASTA_DEVICE_TOKEN_SECRET: env.HASTA_DEVICE_TOKEN_SECRET,
+      HASTA_GOOGLE_CLIENT_SECRET: env.HASTA_GOOGLE_CLIENT_SECRET,
     };
   }
   const parsed = bundle.safeParse(raw);
@@ -47,5 +51,6 @@ export async function loadSecrets(env: Env, fetcher: SecretFetcher = awsSecretFe
     devicePepper: parsed.data.HASTA_DEVICE_PEPPER,
     jwtAccessSecret: parsed.data.HASTA_JWT_ACCESS_SECRET,
     deviceTokenSecret: parsed.data.HASTA_DEVICE_TOKEN_SECRET,
+    googleClientSecret: parsed.data.HASTA_GOOGLE_CLIENT_SECRET,
   };
 }
