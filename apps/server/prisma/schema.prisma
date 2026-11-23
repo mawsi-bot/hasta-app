@@ -1,0 +1,171 @@
+// Hasta v1.0.0 — Prisma schema (identity + profile + idempotency slice, SPEC §13).
+// ORM: Prisma 5 repo-wide (ADR-0001). DDL is owned by prisma/migrations/* — never edit the DB by hand.
+// All ids are UUIDv7 generated in the application (src/common/ids/uuidv7.ts).
+// All timestamps are timestamptz (UTC). Enum literals are snake_case strings guarded by CHECK constraints.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("HASTA_DATABASE_URL")
+}
+
+model Account {
+  id          String    @id @db.Uuid
+  status      String    @default("active")
+  isGuest     Boolean   @default(true) @map("is_guest")
+  displayName String?   @map("display_name")
+  username    String?   @unique
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  deletedAt   DateTime? @map("deleted_at") @db.Timestamptz(6)
+  purgeAt     DateTime? @map("purge_at") @db.Timestamptz(6)
+  updatedHlc  BigInt    @default(0) @map("updated_hlc")
+
+  identities     Identity[]
+  deviceBindings DeviceBinding[]
+  sessions       Session[]
+  transferTokens TransferToken[]
+  profile        Profile?
+  entitlements   Entitlement[]
+
+  @@map("accounts")
+}
+
+model Identity {
+  id            String   @id @db.Uuid
+  accountId     String   @map("account_id") @db.Uuid
+  provider      String
+  providerSub   String   @map("provider_sub")
+  email         String?
+  emailVerified Boolean  @default(false) @map("email_verified")
+  linkedAt      DateTime @default(now()) @map("linked_at") @db.Timestamptz(6)
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([provider, providerSub])
+  @@unique([accountId, provider], map: "uq_identities_account_provider")
+  @@map("identities")
+}
+
+model DeviceBinding {
+  id         String    @id @db.Uuid
+  accountId  String    @map("account_id") @db.Uuid
+  deviceHash String    @map("device_hash")
+  role       String    @default("primary")
+  platform   String
+  pushToken  String?   @map("push_token")
+  boundAt    DateTime  @default(now()) @map("bound_at") @db.Timestamptz(6)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(6)
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([accountId, deviceHash])
+  @@map("device_bindings")
+}
+
+model Session {
+  id            String    @id @db.Uuid
+  accountId     String    @map("account_id") @db.Uuid
+  deviceHash    String    @map("device_hash")
+  refreshHash   String    @unique @map("refresh_hash")
+  familyId      String    @map("family_id") @db.Uuid
+  createdAt     DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt     DateTime  @map("expires_at") @db.Timestamptz(6)
+  revokedAt     DateTime? @map("revoked_at") @db.Timestamptz(6)
+  revokedReason String?   @map("revoked_reason")
+  lastSeenAt    DateTime  @default(now()) @map("last_seen_at") @db.Timestamptz(6)
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([familyId])
+  @@index([accountId])
+  @@map("sessions")
+}
+
+model TransferToken {
+  id         String    @id @db.Uuid
+  accountId  String    @map("account_id") @db.Uuid
+  tokenHash  String    @unique @map("token_hash")
+  fromDevice String    @map("from_device")
+  toDevice   String?   @map("to_device")
+  status     String    @default("pending")
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(6)
+  usedAt     DateTime? @map("used_at") @db.Timestamptz(6)
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("transfer_tokens")
+}
+
+model DeviceCooldown {
+  deviceHash String   @id @map("device_hash")
+  reason     String   @default("account_deleted")
+  until      DateTime @db.Timestamptz(6)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@map("device_cooldowns")
+}
+
+/// Abuse log — device hash ONLY. Never add account_id or a raw device id here (SPEC §5.10).
+model AbuseLog {
+  id         BigInt   @id @default(autoincrement())
+  deviceHash String   @map("device_hash")
+  event      String
+  occurredAt DateTime @default(now()) @map("occurred_at") @db.Timestamptz(6)
+
+  @@index([deviceHash, occurredAt], map: "idx_abuse_device_window")
+  @@map("abuse_logs")
+}
+
+model Profile {
+  userId      String    @id @map("user_id") @db.Uuid
+  displayName String    @map("display_name")
+  bio         String?
+  avatarKey   String?   @map("avatar_key")
+  birthDate   DateTime? @map("birth_date") @db.Date
+  privacy     Json      @default("{}")
+  updatedHlc  BigInt    @default(0) @map("updated_hlc")
+  /// Per-field HLC for field-level LWW merge (SPEC §11.3). [DEVIATION] additive column, ADR-0003.
+  fieldHlc    Json      @default("{}") @map("field_hlc")
+
+  account Account @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("profiles")
+}
+
+model Entitlement {
+  id             String    @id @db.Uuid
+  accountId      String    @map("account_id") @db.Uuid
+  store          String
+  productId      String    @map("product_id")
+  storeTxnHash   String    @map("store_txn_hash")
+  status         String    @default("active")
+  startsAt       DateTime  @map("starts_at") @db.Timestamptz(6)
+  expiresAt      DateTime? @map("expires_at") @db.Timestamptz(6)
+  lastVerifiedAt DateTime  @default(now()) @map("last_verified_at") @db.Timestamptz(6)
+
+  account Account @relation(fields: [accountId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([store, storeTxnHash])
+  @@map("entitlements")
+}
+
+/// Idempotency registry (SPEC §3.3). [DEVIATION] `scope` (acct:<id>) replaces account_id so the
+/// key space can later cover non-account scopes; body stored for replay. ADR-0002.
+model IdempotencyKey {
+  scope        String
+  key          String
+  requestHash  String   @map("request_hash")
+  responseHash String   @map("response_hash")
+  statusCode   Int      @map("status_code")
+  responseBody Json?    @map("response_body")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  expiresAt    DateTime @map("expires_at") @db.Timestamptz(6)
+
+  @@id([scope, key])
+  @@index([expiresAt])
+  @@map("idempotency_keys")
+}

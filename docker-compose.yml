@@ -1,0 +1,33 @@
+# Local stack. Services reach each other by service name (postgres, redis) — never localhost.
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: hasta
+      POSTGRES_PASSWORD: CHANGE_ME
+      POSTGRES_DB: hasta
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hasta"]
+      interval: 5s
+      retries: 10
+  redis:
+    image: redis:7.2
+    ports: ["6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      retries: 10
+  server:
+    build: ./apps/server
+    env_file: ./apps/server/.env
+    environment:
+      HASTA_DATABASE_URL: postgresql://hasta:CHANGE_ME@postgres:5432/hasta?schema=public
+      HASTA_REDIS_URL: redis://redis:6379/0
+    ports: ["3000:3000"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_healthy }
+volumes:
+  pgdata:

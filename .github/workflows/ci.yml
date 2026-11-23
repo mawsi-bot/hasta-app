@@ -1,0 +1,92 @@
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  gates:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ripgrep
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Static gates (T20, T37, T45, hex)
+        run: bash tools/ci/static-gates.sh
+      - name: Design tokens are generated, not hand-edited
+        run: node tools/scripts/generate-tokens.mjs --check
+      - uses: hashicorp/setup-terraform@v3
+        with: { terraform_version: 1.9.8 }
+      - name: Terraform fmt + validate
+        working-directory: infra/terraform
+        run: terraform fmt -check -recursive && terraform init -backend=false -input=false && terraform validate
+
+  server:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/server
+    services:
+      postgres:
+        image: postgis/postgis:16-3.4
+        env:
+          POSTGRES_USER: hasta
+          POSTGRES_PASSWORD: hasta
+          POSTGRES_DB: hasta_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U hasta" --health-interval 5s --health-retries 10
+      redis:
+        image: redis:7.2
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping" --health-interval 5s --health-retries 10
+    env:
+      # Runner-to-service-container networking is exposed on the runner host for job-level services.
+      HASTA_TEST_DATABASE_URL: postgresql://hasta:hasta@127.0.0.1:5432/hasta_test?schema=public
+      HASTA_TEST_REDIS_URL: redis://127.0.0.1:6379/15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: npm, cache-dependency-path: apps/server/package-lock.json }
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+      - name: Create shadow DB
+        run: PGPASSWORD=hasta psql -h 127.0.0.1 -U hasta -d hasta_test -c 'CREATE DATABASE hasta_shadow'
+      - name: Schema and migrations agree
+        run: >-
+          npx prisma migrate diff --from-migrations prisma/migrations --to-schema-datamodel prisma/schema.prisma
+          --shadow-database-url postgresql://hasta:hasta@127.0.0.1:5432/hasta_shadow --exit-code
+      - name: Unit + static + integration (T20, T36 guard, T37, T40, T41, T42)
+        run: npm run test:cov
+      - name: OpenAPI is up to date
+        run: npm run openapi && git diff --exit-code ../../docs/api/openapi.json
+
+  mobile:
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/mobile
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y libsqlite3-dev
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: 3.24.5, channel: stable, cache: true }
+      - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
+      - name: Generated code is committed
+        run: git diff --exit-code -- lib
+      - run: flutter analyze
+      - run: flutter test
+      - name: Quick-test panel (QA define)
+        run: >-
+          flutter test test/features/quick_test_panel_test.dart
+          --dart-define=HASTA_ENV=test --dart-define=HASTA_QUICK_TEST_ACCOUNTS_ENABLED=true
+      - name: T36 release build excludes the quick-test panel
+        working-directory: .
+        run: bash tools/ci/t36-release-panel.sh

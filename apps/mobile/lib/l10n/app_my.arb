@@ -1,0 +1,281 @@
+{
+  "@@locale": "my",
+  "appTitle": "Hasta",
+  "@appTitle": {
+    "description": "App name"
+  },
+  "welcomeTitle": "Hasta မှ ကြိုဆိုပါသည်",
+  "@welcomeTitle": {
+    "description": "Welcome headline [COPY-REVIEW]"
+  },
+  "welcomePrimary": "စတင်အသုံးပြုရန်",
+  "@welcomePrimary": {
+    "description": "DS keyStrings welcome.primary"
+  },
+  "welcomeGuestExplainer": "အီးမေးလ်၊ ဖုန်းနံပါတ် မလိုပါ။ ဤဖုန်းတွင် ချက်ချင်း စတင်နိုင်သည်။",
+  "@welcomeGuestExplainer": {
+    "description": "DS keyStrings welcome.guestExplainer"
+  },
+  "welcomeGuestRisk": "ဖုန်းပျောက်ပါက ဤအကောင့်ကို ပြန်ရနိုင်မည် မဟုတ်ပါ။ Gmail ချိတ်ဆက်ထားရန် အကြံပြုသည်။",
+  "@welcomeGuestRisk": {
+    "description": "DS keyStrings welcome.guestRisk"
+  },
+  "welcomeConsent": "ဆက်လက်ခြင်းဖြင့် ကိုယ်ရေးအချက်အလက် မူဝါဒ နှင့် စည်းမျဉ်းများကို သဘောတူပါသည်။",
+  "@welcomeConsent": {
+    "description": "Consent note under CTA [COPY-REVIEW]"
+  },
+  "welcomePrivacyTerms": "မူဝါဒ နှင့် စည်းမျဉ်းများ",
+  "@welcomePrivacyTerms": {
+    "description": "Link label [COPY-REVIEW]"
+  },
+  "welcomeGuestDisabled": "အကောင့်အသစ် ဖွင့်ခြင်းကို ယာယီ ပိတ်ထားပါသည်။ ခဏနေမှ ပြန်ကြိုးစားပါ။",
+  "@welcomeGuestDisabled": {
+    "description": "Guest flag off [COPY-REVIEW]"
+  },
+  "welcomeCooldown": "ဤဖုန်းဖြင့် အကောင့်အသစ်ကို နောက် {days} ရက်အကြာမှ ဖွင့်နိုင်ပါမည်။",
+  "@welcomeCooldown": {
+    "description": "T42 cooldown [COPY-REVIEW]",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "welcomeRateLimited": "ကြိုးစားမှု များလွန်းပါသည်။ ခဏနေမှ ပြန်ကြိုးစားပါ။",
+  "@welcomeRateLimited": {
+    "description": "429 rate_limited [COPY-REVIEW]"
+  },
+  "welcomeOfflineHint": "စတင်ရန် အင်တာနက် လိုအပ်ပါသည်။",
+  "@welcomeOfflineHint": {
+    "description": "Offline reason under disabled CTA [COPY-REVIEW]"
+  },
+  "errorGeneric": "မအောင်မြင်ပါ။ ခဏနေမှ ပြန်ကြိုးစားပါ။ ({code})",
+  "@errorGeneric": {
+    "description": "DS keyStrings error.generic with parameterised code",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "offlineBanner": "အင်တာနက်မရှိပါ။ ပို့ထားသော စာများကို ချိတ်ဆက်သည်နှင့် ပို့ပေးပါမည်။",
+  "@offlineBanner": {
+    "description": "DS keyStrings offline.banner"
+  },
+  "retry": "ပြန်ကြိုးစားရန်",
+  "@retry": {
+    "description": "Retry button [COPY-REVIEW]"
+  },
+  "loading": "ဖွင့်နေသည်",
+  "@loading": {
+    "description": "a11y label for loaders [COPY-REVIEW]"
+  },
+  "comingSoon": "မကြာမီ ရရှိနိုင်ပါမည်",
+  "@comingSoon": {
+    "description": "Placeholder rows [COPY-REVIEW]"
+  },
+  "navHome": "ပင်မ",
+  "@navHome": {
+    "description": "DS navigation"
+  },
+  "navDiscover": "ရှာဖွေ",
+  "@navDiscover": {
+    "description": "DS navigation"
+  },
+  "navChat": "ချတ်",
+  "@navChat": {
+    "description": "DS navigation"
+  },
+  "navNotifications": "အသိပေး",
+  "@navNotifications": {
+    "description": "DS navigation"
+  },
+  "navProfile": "ပရိုဖိုင်",
+  "@navProfile": {
+    "description": "DS navigation"
+  },
+  "feedEmpty": "အသိုင်းအဝိုင်းနဲ့ စတင်ပါ",
+  "@feedEmpty": {
+    "description": "SPEC §12 feed empty"
+  },
+  "chatEmpty": "စကားပြောမှု မရှိသေး",
+  "@chatEmpty": {
+    "description": "SPEC §12 chat list empty"
+  },
+  "chatEmptyCta": "အဆက်အသွယ် ရှာရန်",
+  "@chatEmptyCta": {
+    "description": "SPEC §12 chat list empty CTA"
+  },
+  "searchEmpty": "ရှာမတွေ့ပါ",
+  "@searchEmpty": {
+    "description": "SPEC §12 search empty"
+  },
+  "notificationsEmpty": "အသိပေးချက် မရှိသေးပါ",
+  "@notificationsEmpty": {
+    "description": "Notifications empty [COPY-REVIEW]"
+  },
+  "profileGuestBadge": "ဧည့်သည် အကောင့်",
+  "@profileGuestBadge": {
+    "description": "Guest badge [COPY-REVIEW]"
+  },
+  "profileNoName": "အမည် မထည့်ရသေးပါ",
+  "@profileNoName": {
+    "description": "Profile placeholder [COPY-REVIEW]"
+  },
+  "profileEdit": "ပရိုဖိုင် ပြင်ရန်",
+  "@profileEdit": {
+    "description": "Edit button [COPY-REVIEW]"
+  },
+  "profileDisplayName": "အမည်",
+  "@profileDisplayName": {
+    "description": "Field [COPY-REVIEW]"
+  },
+  "profileUsername": "အသုံးပြုသူအမည်",
+  "@profileUsername": {
+    "description": "Field [COPY-REVIEW]"
+  },
+  "profileBio": "မိမိအကြောင်း",
+  "@profileBio": {
+    "description": "Field [COPY-REVIEW]"
+  },
+  "profileBirthDate": "မွေးနေ့",
+  "@profileBirthDate": {
+    "description": "Field [COPY-REVIEW]"
+  },
+  "profileUsernameRule": "a–z၊ 0–9၊ . နှင့် _ သာ၊ စာလုံး ၃ မှ ၃၂ လုံး",
+  "@profileUsernameRule": {
+    "description": "Username validation [COPY-REVIEW]"
+  },
+  "profileUsernameTaken": "ဤအသုံးပြုသူအမည်ကို အသုံးပြုပြီး ဖြစ်ပါသည်။ အခြားအမည် ရွေးပါ။",
+  "@profileUsernameTaken": {
+    "description": "409 username_taken [COPY-REVIEW]"
+  },
+  "profileBioTooLong": "စာလုံး ၃၀၀ ထက် မပိုရပါ",
+  "@profileBioTooLong": {
+    "description": "Bio limit [COPY-REVIEW]"
+  },
+  "profileSyncPending": "ချိတ်ဆက်သည်နှင့် သိမ်းပေးပါမည်",
+  "@profileSyncPending": {
+    "description": "Outbox waiting badge [COPY-REVIEW]"
+  },
+  "profileSaved": "သိမ်းပြီးပါပြီ",
+  "@profileSaved": {
+    "description": "Toast [COPY-REVIEW]"
+  },
+  "profileGmailNudge": "ဖုန်းပျောက်လျှင် အကောင့်ပြန်ရရန် Gmail ချိတ်ဆက်ပါ",
+  "@profileGmailNudge": {
+    "description": "Guest nudge [COPY-REVIEW]"
+  },
+  "save": "သိမ်းရန်",
+  "@save": {
+    "description": "Button [COPY-REVIEW]"
+  },
+  "cancel": "မလုပ်တော့ပါ",
+  "@cancel": {
+    "description": "Button [COPY-REVIEW]"
+  },
+  "settingsTitle": "ဆက်တင်များ",
+  "@settingsTitle": {
+    "description": "Screen title [COPY-REVIEW]"
+  },
+  "settingsAccount": "အကောင့်",
+  "@settingsAccount": {
+    "description": "Section 1 [COPY-REVIEW]"
+  },
+  "settingsPrivacySecurity": "ကိုယ်ရေးအချက်အလက် နှင့် လုံခြုံရေး",
+  "@settingsPrivacySecurity": {
+    "description": "Section 2 [COPY-REVIEW]"
+  },
+  "settingsNotifications": "အသိပေးချက်များ",
+  "@settingsNotifications": {
+    "description": "Section 3 [COPY-REVIEW]"
+  },
+  "settingsDataStorage": "ဒေတာ နှင့် သိုလှောင်မှု",
+  "@settingsDataStorage": {
+    "description": "Section 4 [COPY-REVIEW]"
+  },
+  "settingsChat": "ချတ်",
+  "@settingsChat": {
+    "description": "Section 5 [COPY-REVIEW]"
+  },
+  "settingsAppearance": "အသွင်အပြင်",
+  "@settingsAppearance": {
+    "description": "Section 6 [COPY-REVIEW]"
+  },
+  "settingsDating": "Dating",
+  "@settingsDating": {
+    "description": "Section 7 [COPY-REVIEW]"
+  },
+  "settingsDevices": "စက်များ",
+  "@settingsDevices": {
+    "description": "Section 8 [COPY-REVIEW]"
+  },
+  "settingsLanguage": "ဘာသာစကား",
+  "@settingsLanguage": {
+    "description": "Section 9 [COPY-REVIEW]"
+  },
+  "settingsPremium": "Premium",
+  "@settingsPremium": {
+    "description": "Section 10 [COPY-REVIEW]"
+  },
+  "settingsHelp": "အကူအညီ",
+  "@settingsHelp": {
+    "description": "Section 11 [COPY-REVIEW]"
+  },
+  "settingsEditProfile": "ပရိုဖိုင် ပြင်ရန်",
+  "@settingsEditProfile": {
+    "description": "Account row [COPY-REVIEW]"
+  },
+  "settingsLinkedAccounts": "ချိတ်ဆက်ထားသော အကောင့်များ",
+  "@settingsLinkedAccounts": {
+    "description": "Account row [COPY-REVIEW]"
+  },
+  "settingsConnectGmail": "Gmail ချိတ်ဆက်ရန်",
+  "@settingsConnectGmail": {
+    "description": "DS keyStrings settings.connectGmail"
+  },
+  "settingsOnlineOnly": "အင်တာနက် ချိတ်ဆက်ထားမှ အသုံးပြုနိုင်ပါသည်",
+  "@settingsOnlineOnly": {
+    "description": "T43 disabled reason [COPY-REVIEW]"
+  },
+  "settingsChangeDevice": "ဖုန်း/စက် ပြောင်းရန်",
+  "@settingsChangeDevice": {
+    "description": "Account row [COPY-REVIEW]"
+  },
+  "settingsActiveSessions": "အသုံးပြုနေသော စက်များ",
+  "@settingsActiveSessions": {
+    "description": "Security row [COPY-REVIEW]"
+  },
+  "settingsOfflineLocalOnly": "ချိန်ညှိမှု သိမ်းမထားပါ",
+  "@settingsOfflineLocalOnly": {
+    "description": "SPEC §12 settings offline"
+  },
+  "settingsSignOut": "ဤဖုန်းမှ ထွက်ရန်",
+  "@settingsSignOut": {
+    "description": "Sign out row [COPY-REVIEW]"
+  },
+  "settingsSignOutTitle": "ဤဖုန်းမှ ထွက်မလား?",
+  "@settingsSignOutTitle": {
+    "description": "Dialog title [COPY-REVIEW]"
+  },
+  "settingsSignOutBody": "ဧည့်သည် အကောင့်ကို ဤဖုန်းတွင် ချိတ်ထားဆဲ ဖြစ်၍ «စတင်အသုံးပြုရန်» ကို နှိပ်ပါက ပြန်ဝင်နိုင်ပါသည်။",
+  "@settingsSignOutBody": {
+    "description": "Dialog body [COPY-REVIEW]"
+  },
+  "settingsSignOutAction": "ထွက်သည်",
+  "@settingsSignOutAction": {
+    "description": "Destructive verb [COPY-REVIEW]"
+  },
+  "languageMyanmar": "မြန်မာ",
+  "@languageMyanmar": {
+    "description": "Language option"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Language option"
+  },
+  "premiumGuestBlocked": "Premium ဝယ်ယူရန် Gmail ချိတ်ဆက်ထားရပါမည်။",
+  "@premiumGuestBlocked": {
+    "description": "DS keyStrings premium.guestBlocked"
+  }
+}

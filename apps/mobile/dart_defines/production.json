@@ -1,0 +1,5 @@
+{
+  "HASTA_ENV": "production",
+  "HASTA_API_BASE_URL": "https://api.example.invalid",
+  "HASTA_QUICK_TEST_ACCOUNTS_ENABLED": "false"
+}
