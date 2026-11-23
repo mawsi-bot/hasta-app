@@ -1,6 +1,6 @@
 # ADR-0005 — Primary action fill uses the `text.link` token alias
 
-Status: accepted (Sprint 1) — revisit when DS 1.1 adds a brand fill token
+Status: superseded by ADR-0006 (DS 1.0.1 adds bg.brand)
 
 ## Context
 `design-tokens.json` 1.0.0 has no `bg.brand`/`action.primary` colour. Hard-coded hex is forbidden.

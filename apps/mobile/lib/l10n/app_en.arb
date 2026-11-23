@@ -66,5 +66,6 @@
   "settingsSignOutAction": "Sign out",
   "languageMyanmar": "မြန်မာ",
   "languageEnglish": "English",
-  "premiumGuestBlocked": "Connect Gmail to buy Premium."
+  "premiumGuestBlocked": "Connect Gmail to buy Premium.",
+  "zawgyiDetected": "Zawgyi text is not supported. Please type in Unicode."
 }

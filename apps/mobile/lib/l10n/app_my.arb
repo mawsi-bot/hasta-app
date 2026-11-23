@@ -277,5 +277,9 @@
   "premiumGuestBlocked": "Premium ဝယ်ယူရန် Gmail ချိတ်ဆက်ထားရပါမည်။",
   "@premiumGuestBlocked": {
     "description": "DS keyStrings premium.guestBlocked"
+  },
+  "zawgyiDetected": "ဇော်ဂျီ စာသားကို လက်မခံပါ။ ယူနီကုဒ်ဖြင့် ရိုက်ထည့်ပါ။",
+  "@zawgyiDetected": {
+    "description": "Zawgyi detect stub rejection [COPY-REVIEW]"
   }
 }

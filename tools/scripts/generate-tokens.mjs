@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Generates apps/mobile/lib/core/design/tokens.dart from design/hasta-ds-1.0.0.json.
+// Generates apps/mobile/lib/core/design/tokens.dart from design/hasta-ds-1.0.2.json.
 // SKILL rule 8: the Dart token file is GENERATED, never hand-edited.
 // CI runs this script and fails on `git diff --exit-code` (token drift gate).
 //
@@ -9,7 +9,7 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const srcPath = resolve(root, 'design/hasta-ds-1.0.0.json');
+const srcPath = resolve(root, 'design/hasta-ds-1.0.2.json');
 const outPath = resolve(root, 'apps/mobile/lib/core/design/tokens.dart');
 const ds = JSON.parse(readFileSync(srcPath, 'utf8'));
 
@@ -22,9 +22,11 @@ const camel = (dotted) =>
   dotted.split(/[.\-_]/).map((p, i) => (i === 0 ? p : p[0].toUpperCase() + p.slice(1))).join('');
 
 // '#RRGGBB' or '#RRGGBBAA' (CSS order) -> Dart 0xAARRGGBB
-function dartColor(hex) {
+// A token-level `opacity` (DS 1.0.1 bg.brandDisabled) becomes the alpha channel.
+function dartColor(hex, opacity) {
   const h = hex.replace('#', '').toUpperCase();
-  if (h.length === 6) return `Color(0xFF${h})`;
+  const a = Math.round((opacity ?? 1) * 255).toString(16).toUpperCase().padStart(2, '0');
+  if (h.length === 6) return `Color(0x${a}${h})`;
   if (h.length === 8) return `Color(0x${h.slice(6)}${h.slice(0, 6)})`;
   throw new Error(`Unsupported colour literal ${hex}`);
 }
@@ -39,7 +41,7 @@ const lines = [];
 const w = (s = '') => lines.push(s);
 
 w('// GENERATED CODE — DO NOT EDIT BY HAND.');
-w(`// Source: design/hasta-ds-1.0.0.json (${ds.meta.designSystem} v${ds.meta.version})`);
+w(`// Source: design/hasta-ds-1.0.2.json (DS ${ds.meta.dsVersion})`);
 w('// Regenerate: node tools/scripts/generate-tokens.mjs');
 w('// ignore_for_file: public_member_api_docs, constant_identifier_names');
 w();
@@ -59,7 +61,7 @@ for (const n of names) {
 w();
 for (const t of themes) {
   w(`  static const HastaColors ${t} = HastaColors(`);
-  for (const n of names) w(`    ${camel(n)}: ${dartColor(valueFor(semantic[n], t))},`);
+  for (const n of names) w(`    ${camel(n)}: ${dartColor(valueFor(semantic[n], t), semantic[n].opacity)},`);
   w('  );');
   w();
 }

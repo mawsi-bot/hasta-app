@@ -113,7 +113,11 @@ export class AuthService {
       };
 
       if (s.revokedAt !== null) return s.revokedReason === 'rotated' ? revokeFamily() : { kind: 'reject', reuse: false };
+      // T46: the refresh token is bound to (account_id, device_hash) — the presenting device must match AND
+      // still hold an active binding for this account; otherwise treat it as a stolen token.
       if (s.deviceHash !== device.dh) return revokeFamily();
+      const bound = await tx.deviceBinding.count({ where: { accountId: s.accountId, deviceHash: s.deviceHash, revokedAt: null } });
+      if (bound !== 1) return revokeFamily();
       if (s.expiresAt.getTime() <= Date.now() || !RESUMABLE.has(s.account.status)) return { kind: 'reject', reuse: false };
 
       const claimed = await tx.session.updateMany({

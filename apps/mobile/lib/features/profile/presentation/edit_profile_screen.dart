@@ -6,6 +6,7 @@ import '../../../core/db/drift/app_database.dart';
 import '../../../core/design/hasta_theme.dart';
 import '../../../core/design/tokens.dart';
 import '../../../core/providers.dart';
+import '../../../core/text/zawgyi.dart';
 import '../../../shared/widgets/hasta_button.dart';
 import '../../../shared/widgets/offline_banner.dart';
 import '../../auth/domain/auth_controller.dart';
@@ -95,6 +96,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     maxLength: ProfileDraft.displayNameMax,
                     decoration: InputDecoration(labelText: l.profileDisplayName),
                     style: HastaType.body.copyWith(color: c.textPrimary),
+                    validator: (String? v) => looksLikeZawgyi(v ?? '') ? l.zawgyiDetected : null,
                   ),
                   const SizedBox(height: HastaSpace.s12),
                   TextFormField(
@@ -118,7 +120,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     maxLength: ProfileDraft.bioMax,
                     decoration: InputDecoration(labelText: l.profileBio),
                     style: HastaType.body.copyWith(color: c.textPrimary),
-                    validator: (String? v) => (v ?? '').length > ProfileDraft.bioMax ? l.profileBioTooLong : null,
+                    validator: (String? v) => looksLikeZawgyi(v ?? '')
+                        ? l.zawgyiDetected
+                        : ((v ?? '').length > ProfileDraft.bioMax ? l.profileBioTooLong : null),
                   ),
                   const SizedBox(height: HastaSpace.s12),
                   InkWell(

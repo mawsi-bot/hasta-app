@@ -3,6 +3,7 @@ import { Prisma } from '@prisma/client';
 import { ENV } from '../../config/config.module';
 import { TEST_MODE_ENVS, type Env } from '../../config/env';
 import { PrismaService } from '../../infra/prisma.service';
+import { looksLikeZawgyi } from '../../common/text/zawgyi';
 import { ApiError } from '../../common/errors/api-error';
 import { mergeFields, parseHlc, type FieldClocks } from './hlc-merge';
 import { maskEmail } from './mask-email';
@@ -64,6 +65,10 @@ export class ProfileService {
       throw ApiError.validation({ hlc: 'invalid' });
     }
     if (dto.birth_date !== undefined) assertPlausibleBirthDate(dto.birth_date);
+    for (const f of ['display_name', 'bio'] as const) {
+      const v = dto[f];
+      if (typeof v === 'string' && looksLikeZawgyi(v)) throw ApiError.validation({ [f]: 'zawgyi_detected' });
+    }
     const present = PROFILE_FIELDS.filter((f) => dto[f] !== undefined);
 
     try {

@@ -52,7 +52,7 @@ describe('refresh rotation + family reuse detection (SPEC §5.3)', () => {
     expect(rs.some((r) => r.status === 401)).toBe(true);
   });
 
-  it('refresh from another device revokes the family (stolen token)', async () => {
+  it('unbound device (no account) presenting the token → 401 + family revoked', async () => {
     const { g } = await login();
     const other = await registerDevice(ctx);
     const res = await refresh(g.refresh_token, other.device_token);
@@ -72,6 +72,26 @@ describe('refresh rotation + family reuse detection (SPEC §5.3)', () => {
     await refresh(g.refresh_token, d.device_token);
     const me = await ctx.http().get('/v1/me').set('Authorization', `Bearer ${g.access_token}`);
     expect(me.status).toBe(200);
+  });
+});
+
+describe('T46 — refresh token is bound to (account_id, device_hash) (SPEC 1.0.1 §5.3)', () => {
+  it('token replayed from a DIFFERENT device binding → 401 + whole family revoked; the other binding is untouched', async () => {
+    const a = await login();
+    const b = await login();
+    const res = await refresh(a.g.refresh_token, b.d.device_token);
+    expect(res.status).toBe(401);
+    expect(res.body.error.details).toEqual({ reason: 'reuse_detected' });
+    expect(await ctx.prisma.session.count({ where: { accountId: a.g.account.id, revokedAt: null } })).toBe(0);
+    expect((await refresh(b.g.refresh_token, b.d.device_token)).status).toBe(200);
+  });
+
+  it('same device, but the binding was revoked (e.g. transfer) → 401 + family revoked', async () => {
+    const { d, g } = await login();
+    await ctx.prisma.deviceBinding.updateMany({ where: { accountId: g.account.id }, data: { revokedAt: new Date() } });
+    const res = await refresh(g.refresh_token, d.device_token);
+    expect(res.status).toBe(401);
+    expect(await ctx.prisma.session.count({ where: { accountId: g.account.id, revokedAt: null } })).toBe(0);
   });
 });
 

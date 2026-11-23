@@ -1,7 +1,9 @@
 name: mobile-release-check
+# T36 runs on EVERY pull request (SPEC §16) — no path filter — and on release tags.
 on:
   pull_request:
-    paths: ["apps/mobile/**", ".github/workflows/mobile.yml"]
+  push:
+    tags: ["v*"]
   workflow_dispatch:
 permissions:
   contents: read

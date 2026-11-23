@@ -30,12 +30,15 @@ class HastaButton extends StatelessWidget {
     final HastaColors c = context.colors;
     final bool enabled = onPressed != null && !loading;
     final (Color bg, Color fg, BorderSide side) = switch (variant) {
-      HastaButtonVariant.primary => (c.actionPrimary, c.textOnBrand, BorderSide.none),
+      HastaButtonVariant.primary => (c.bgBrand, c.textOnBrand, BorderSide.none),
       HastaButtonVariant.secondary => (c.bgSurface, c.textLink, BorderSide(color: c.borderStrong)),
       HastaButtonVariant.ghost => (c.bgSurface.withAlpha(0), c.textLink, BorderSide.none),
       HastaButtonVariant.danger => (c.textDanger, c.textOnBrand, BorderSide.none),
     };
-    final Color disabledBg = variant == HastaButtonVariant.ghost ? bg : c.bgSunken;
+    final bool primary = variant == HastaButtonVariant.primary;
+    // DS 1.0.1 §14.1 (ADR-0006): primary uses the dedicated brand fill states.
+    final Color disabledBg = primary ? c.bgBrandDisabled : (variant == HastaButtonVariant.ghost ? bg : c.bgSunken);
+    final Color disabledFg = primary ? c.textOnBrand : c.textTertiary;
 
     return Semantics(
       button: true,
@@ -47,9 +50,11 @@ class HastaButton extends StatelessWidget {
           onPressed: enabled ? onPressed : null,
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.resolveWith(
-                (Set<WidgetState> s) => s.contains(WidgetState.disabled) && !loading ? disabledBg : bg),
+                (Set<WidgetState> s) => s.contains(WidgetState.disabled) && !loading
+                    ? disabledBg
+                    : (primary && s.contains(WidgetState.pressed) ? c.bgBrandPressed : bg)),
             foregroundColor: WidgetStateProperty.resolveWith(
-                (Set<WidgetState> s) => s.contains(WidgetState.disabled) && !loading ? c.textTertiary : fg),
+                (Set<WidgetState> s) => s.contains(WidgetState.disabled) && !loading ? disabledFg : fg),
             overlayColor: WidgetStatePropertyAll<Color>(fg.withAlpha(24)),
             side: WidgetStatePropertyAll<BorderSide>(side),
             minimumSize: const WidgetStatePropertyAll<Size>(Size(HastaSize.touchTargetAndroid, HastaSize.buttonLg)),
