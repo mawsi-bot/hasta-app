@@ -1,4 +1,4 @@
-﻿---
+---
 name: hasta-build
 description: "Build, implement, review or extend the Hasta v1.0.0 app (Flutter + NestJS social feed / chat / dating app for the Myanmar market). Use when asked to implement a Hasta sprint, generate Hasta code, DDL, migrations or API endpoints, produce Hasta UI from design tokens, review Hasta code against SPEC 1.0.0, run the Hasta test matrix, or answer Hasta questions about guest-first auth, Gmail account linking, dating rules, offline-first sync, or Myanmar design system. Example triggers: 'Hasta Sprint 2 implement လုပ်ပါ', 'build Hasta dating match flow', 'review this Hasta code against the spec'."
 ---
