@@ -9,6 +9,7 @@ import '../../../core/providers.dart';
 import '../../../shared/widgets/list_row.dart';
 import '../../../shared/widgets/offline_banner.dart';
 import '../../auth/domain/auth_controller.dart';
+import '../../linked_accounts/presentation/linked_accounts_sheet.dart';
 import '../../profile/presentation/edit_profile_screen.dart';
 import '../../profile/presentation/profile_providers.dart';
 
@@ -19,6 +20,12 @@ import '../../profile/presentation/profile_providers.dart';
 /// States: loading = static; error = toast; offline = local-only banner
 /// ("ချိန်ညှိမှု သိမ်းမထားပါ") and online-only rows visibly disabled with a
 /// reason — Connect Gmail is the T43 case.
+/// Drift-backed so the Premium row updates as soon as link:complete flips `is_guest` (T44 client half).
+final StreamProvider<LocalAccount?> localAccountProvider = StreamProvider<LocalAccount?>((Ref ref) {
+  final AppDatabase db = ref.watch(databaseProvider);
+  return db.select(db.localAccounts).watchSingleOrNull();
+});
+
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -30,6 +37,7 @@ class SettingsScreen extends ConsumerWidget {
     final bool online = ref.isOnline;
     final String lang = ref.watch(localeProvider).valueOrNull?.languageCode ?? 'my';
     final LocalProfile? profile = ref.watch(myProfileProvider).valueOrNull;
+    final bool isGuest = ref.watch(localAccountProvider).valueOrNull?.isGuest ?? true;
 
     void soon() => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l.comingSoon)));
     HastaListRow placeholder(String title, IconData icon) =>
@@ -59,7 +67,7 @@ class SettingsScreen extends ConsumerWidget {
                   subtitle: online ? l.settingsLinkedAccounts : l.settingsOnlineOnly,
                   icon: Icons.mail_outline,
                   enabled: online,
-                  onTap: soon, // Sprint 2: Linked accounts sheet (link:start / link:complete)
+                  onTap: () => showLinkedAccountsSheet(context),
                 ),
                 HastaListRow(
                   title: l.settingsChangeDevice,
@@ -86,7 +94,8 @@ class SettingsScreen extends ConsumerWidget {
                 _LanguageRow(code: 'my', label: l.languageMyanmar, selected: lang == 'my'),
                 _LanguageRow(code: 'en', label: l.languageEnglish, selected: lang == 'en'),
                 SectionHeader(l.settingsPremium),
-                HastaListRow(title: l.settingsPremium, subtitle: l.premiumGuestBlocked, icon: Icons.workspace_premium_outlined, onTap: soon),
+                HastaListRow(
+                    title: l.settingsPremium, subtitle: isGuest ? l.premiumGuestBlocked : l.comingSoon, icon: Icons.workspace_premium_outlined, onTap: soon),
                 SectionHeader(l.settingsHelp),
                 placeholder(l.welcomePrivacyTerms, Icons.help_outline),
                 const SizedBox(height: HastaSpace.sectionGap),
