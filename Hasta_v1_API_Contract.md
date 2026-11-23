@@ -92,8 +92,11 @@ Request `{ "state": "…", "code": "…" }` — the server exchanges `code` (PKC
 → `200 { "identity": { "provider": "google", "email_masked": "h***@gmail.com", "linked_at": "…" }, "account": { "id": "018f…", "is_guest": false }, "unlocked": ["premium_purchase","restore_purchases","device_recovery"] }`
 Errors: `409 identity_in_use`, `422 google_email_unverified`, `401 token_expired` (state), `403 store_receipt_invalid`→n/a, `400 validation_failed`.
 
+`GET /v1/auth/identities/google/link:callback` — public; the HTTPS `redirect_uri` registered with Google (web client, SPEC §19).
+→ `302 Location: hasta://link/google?code=…&state=…` (or `?error=…&state=…` on cancel). It forwards only `code`, `error` and `state`.
+
 `DELETE /v1/auth/identities/google` — auth
-→ `204`, or `409 {code:"recovery_required"}` when it is the only recovery method. Unlinking sets `is_guest=true`; existing paid entitlement survives to expiry (no refund).
+→ `204`, or `409 {code:"recovery_required"}` when it is the only recovery method. Unlinking sets `is_guest=true` only when no Google/Apple identity remains, which `recovery_required` currently makes unreachable; existing paid entitlement survives to expiry (no refund).
 
 > **Not implemented in v1:** `POST /v1/auth/google/signin`, `POST /v1/auth/apple/signin`, any `id_token`-only login, any OTP/SMS route. CI gate T37 fails the build if any appears.
 

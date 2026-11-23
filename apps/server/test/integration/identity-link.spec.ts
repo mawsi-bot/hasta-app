@@ -138,6 +138,38 @@ describe('link:complete', () => {
   });
 });
 
+describe('DELETE /v1/auth/identities/google', () => {
+  const unlink = (at: string) => ctx.http().delete(BASE).set('Authorization', `Bearer ${at}`).set('Idempotency-Key', uuidv7());
+
+  it('Google as the only recovery method → 409 recovery_required, identity kept', async () => {
+    const a = await login();
+    await link(a.access_token);
+    const res = await unlink(a.access_token);
+    expect(res.status).toBe(409);
+    expect(res.body.error.code).toBe('recovery_required');
+    expect(await identities()).toBe(1);
+  });
+
+  it('with another recovery identity → 204 and the account stays non-guest', async () => {
+    const a = await login();
+    await link(a.access_token);
+    await ctx.prisma.identity.create({ data: { id: uuidv7(), accountId: a.account.id, provider: 'apple', providerSub: 'apple-1' } });
+    expect((await unlink(a.access_token)).status).toBe(204);
+    expect(await identities()).toBe(0);
+    expect((await ctx.prisma.account.findUniqueOrThrow({ where: { id: a.account.id } })).isGuest).toBe(false);
+  });
+});
+
+describe('GET link:callback (HTTPS redirect target for the web client)', () => {
+  it('302s code + state to the app scheme, and forwards a user cancel', async () => {
+    const ok = await ctx.http().get(`${BASE}/link:callback`).query({ code: 'abc', state: 'xyz', scope: 'email' });
+    expect(ok.status).toBe(302);
+    expect(ok.headers.location).toBe('hasta://link/google?code=abc&state=xyz');
+    const cancel = await ctx.http().get(`${BASE}/link:callback`).query({ error: 'access_denied', state: 'xyz' });
+    expect(cancel.headers.location).toBe('hasta://link/google?error=access_denied&state=xyz');
+  });
+});
+
 describe('Gmail link flag off', () => {
   it('HASTA_AUTH_GOOGLE_LINK_ENABLED=false → 403 feature_disabled', async () => {
     const off = await bootApp({ ...GOOGLE_TEST_ENV, HASTA_AUTH_GOOGLE_LINK_ENABLED: 'false' });
