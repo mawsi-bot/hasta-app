@@ -86,7 +86,7 @@ class AuthRepository {
     return s;
   }
 
-  /// Offline-first restore: a stored refresh token + cached account is enough
+  /// Offline restore: a stored refresh token + cached account is enough
   /// to open the app with no network.
   Future<AccountSummary?> restore() async {
     final String? refresh = await _tokens.read(SecureKey.refreshToken);
