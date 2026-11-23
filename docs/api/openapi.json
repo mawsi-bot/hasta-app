@@ -276,6 +276,59 @@
         ]
       }
     },
+    "/v1/auth/identities/google": {
+      "delete": {
+        "operationId": "IdentityController_unlink",
+        "summary": "Unlink Gmail (blocked when it is the only recovery method)",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUIDv7",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "unlinked"
+          },
+          "409": {
+            "description": "recovery_required"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/v1/auth/identities/google/link:callback": {
+      "get": {
+        "operationId": "IdentityController_callback",
+        "summary": "OAuth redirect target: 302 to hasta://link/google with code + state",
+        "parameters": [],
+        "responses": {
+          "302": {
+            "description": "redirect to the app scheme"
+          }
+        },
+        "tags": [
+          "identity"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
     "/v1/me": {
       "get": {
         "operationId": "MeController_me",
