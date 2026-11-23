@@ -144,7 +144,7 @@ void main() {
     await h.dispose(tester);
   });
 
-  testWidgets('T36 (app side): default build has the quick-test flag compiled off; 3 s long-press opens nothing',
+  group('default flavour', () => testWidgets('T36 (app side): default build has the quick-test flag compiled off; 3 s long-press opens nothing',
       (WidgetTester tester) async {
     expect(BuildConfig.quickTestAccountsEnabled, isFalse);
     final Harness h = freshDevice();
@@ -154,7 +154,7 @@ void main() {
     await h.settle(tester);
     expect(find.byKey(const Key(kQuickTestPanelMarker)), findsNothing);
     await h.dispose(tester);
-  }, skip: BuildConfig.quickTestAccountsEnabled);
+  }), skip: BuildConfig.quickTestAccountsEnabled ? 'HAS-103 (#4): default-build assertion; QA run covers the opposite' : false);
 
   testWidgets('restore: stored session + cached account opens Home offline (offline-first)', (WidgetTester tester) async {
     final Harness h = freshDevice(online: false);

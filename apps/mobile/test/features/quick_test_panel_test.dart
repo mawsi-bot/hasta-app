@@ -14,7 +14,7 @@ import '../support/harness.dart';
 void main() {
   const bool qa = BuildConfig.quickTestAccountsEnabled;
 
-  testWidgets('QA build: 3 s long-press on the logo opens Quick test accounts; tap signs in (SPEC §19)',
+  group('QA flavour', () => testWidgets('QA build: 3 s long-press on the logo opens Quick test accounts; tap signs in (SPEC §19)',
       (WidgetTester tester) async {
     final Harness h = Harness();
     await h.tokens.write(SecureKey.deviceToken, 'dt_1');
@@ -43,7 +43,7 @@ void main() {
     await h.settle(tester);
     expect(find.byType(HomeShell), findsOneWidget);
     await h.dispose(tester);
-  }, skip: !qa);
+  }), skip: qa ? false : 'HAS-103 (#4): QA defines only; runs unskipped in CI step "Quick-test panel (QA define)"');
 
   test('release/production config compiles the panel flag to false (T36 guard logic)', () {
     // Guard expression is `flag && env in {dev,test,beta}`.
