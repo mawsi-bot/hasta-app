@@ -281,5 +281,51 @@
   "zawgyiDetected": "ဇော်ဂျီ စာသားကို လက်မခံပါ။ ယူနီကုဒ်ဖြင့် ရိုက်ထည့်ပါ။",
   "@zawgyiDetected": {
     "description": "Zawgyi detect stub rejection [COPY-REVIEW]"
+  },
+  "gmailNotLinked": "မချိတ်ဆက်ရသေး",
+  "@gmailNotLinked": {
+    "description": "DS stateMatrix linkedAccountsGmail.empty"
+  },
+  "gmailBenefit": "ချိတ်ဆက်ပါက — (၁) ဖုန်းပြောင်းလျှင် အကောင့် ပြန်ရနိုင်သည် (၂) Premium ဝယ်ယူနိုင်သည် (၃) Restore Purchases သုံးနိုင်သည်။",
+  "@gmailBenefit": {
+    "description": "SPEC §14.7 Gmail benefit sheet (normative)"
+  },
+  "gmailLinkedMasked": "ချိတ်ဆက်ပြီး — {email}",
+  "@gmailLinkedMasked": {
+    "description": "DS keyStrings settings.gmailLinked; {email} is the server email_masked",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "gmailLinkFailed": "မအောင်မြင်ပါ။ ပြန်ကြိုးစားပါ ({code})",
+  "@gmailLinkFailed": {
+    "description": "DS stateMatrix linkedAccountsGmail.error",
+    "placeholders": {
+      "code": {
+        "type": "String"
+      }
+    }
+  },
+  "gmailIdentityInUse": "ဤ Gmail ကို အခြားအကောင့်တွင် ချိတ်ဆက်ထားပြီးဖြစ်သည်။ အခြား Gmail ဖြင့် ကြိုးစားပါ။",
+  "@gmailIdentityInUse": {
+    "description": "[PENDING-COPY] API 409 identity_in_use"
+  },
+  "gmailEmailUnverified": "ဤ Gmail ကို Google တွင် အတည်မပြုရသေးပါ။ အတည်ပြုပြီးမှ ပြန်ကြိုးစားပါ။",
+  "@gmailEmailUnverified": {
+    "description": "[PENDING-COPY] API 422 google_email_unverified"
+  },
+  "gmailLinkCancelled": "Gmail ချိတ်ဆက်ခြင်းကို ပယ်ဖျက်လိုက်သည်။",
+  "@gmailLinkCancelled": {
+    "description": "[PENDING-COPY] DS stateMatrix linkedAccountsGmail.permissionDenied"
+  },
+  "gmailUnlink": "Gmail ဖြုတ်ရန်",
+  "@gmailUnlink": {
+    "description": "[PENDING-COPY] SPEC §5.4 unlink action"
+  },
+  "gmailUnlinkBlocked": "Recovery နည်းလမ်း တစ်ခု ရှိမှသာ ဖြုတ်နိုင်သည်",
+  "@gmailUnlinkBlocked": {
+    "description": "SPEC §5.4 unlink blocked (normative)"
   }
 }
